@@ -30,7 +30,7 @@ INSTALLED_APPS = [
     'drf_spectacular',
     'social_django',
 
-    'authentication',
+    'authentication.apps.AuthenticationConfig',
     'oauth_social',
     'two_factor',
 ]
