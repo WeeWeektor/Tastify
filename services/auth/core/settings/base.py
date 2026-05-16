@@ -71,10 +71,12 @@ DATABASES = {
     'default': env.db('DATABASE_URL')
 }
 
+REDIS_URL = env('REDIS_URL')
+
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': env('REDIS_URL'),
+        'LOCATION': REDIS_URL,
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
             'IGNORE_EXCEPTIONS': True,
@@ -149,3 +151,16 @@ SPECTACULAR_SETTINGS = {
         }
     },
 }
+
+FRONTEND_URL = env('FRONTEND_URL', default='http://localhost:3000')
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+EMAIL_HOST = env('EMAIL_HOST')
+EMAIL_PORT = env.int('EMAIL_PORT')
+EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS')
+
+EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+
+DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default='Tastify <noreply@tastify.com>')
