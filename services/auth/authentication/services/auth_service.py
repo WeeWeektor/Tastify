@@ -3,8 +3,7 @@ import uuid
 
 from django.contrib.auth import get_user_model
 from django.db import transaction
-
-from .email_service import VerificationEmail, EmailSenderService
+from authentication.tasks import send_verification_email_task
 from .token_service import email_verification_service
 
 User = get_user_model()
@@ -25,10 +24,6 @@ class AuthenticationService:
 
         email_verification_service.store(user_id=str(user.id), token=verification_token)
 
-        email_template = VerificationEmail(to_email=user.email, token=verification_token)
-        email_sent = EmailSenderService.send(email_template)
-
-        if not email_sent:
-            logger.warning(f"Registration email to {email} was not sent, but user was created.")
+        send_verification_email_task.delay(user.email, verification_token)
 
         return user

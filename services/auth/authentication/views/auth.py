@@ -7,9 +7,6 @@ from authentication.serializers import RegisterSerializer
 from authentication.services import AuthenticationService
 
 
-# TODO - асинхронність
-
-
 class RegisterView(APIView):
     permission_classes = [permissions.AllowAny]
 
