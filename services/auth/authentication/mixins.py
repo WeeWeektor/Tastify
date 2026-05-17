@@ -2,7 +2,7 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
 
-class PasswordValidationAndConfirmationMixin:
+class PasswordValidationAndConfirmationMixin(serializers.Serializer):
     """
     Міксин для валідації пароля та його підтвердження.
     """

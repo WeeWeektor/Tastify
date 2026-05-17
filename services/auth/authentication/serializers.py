@@ -4,6 +4,7 @@ from rest_framework import serializers
 from rest_framework_simplejwt.exceptions import InvalidToken
 from rest_framework_simplejwt.serializers import TokenRefreshSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.validators import UniqueValidator
 
 from authentication.mixins import PasswordValidationAndConfirmationMixin
 from authentication.models import RefreshTokenBlacklist
@@ -12,7 +13,29 @@ from authentication.services.token_service import token_blacklist_service
 User = get_user_model()
 
 
-class RegisterSerializer(PasswordValidationAndConfirmationMixin, serializers.ModelSerializer):
+EMAIL_FIELD_ERROR_MESSAGES = {
+    'required': _('Email is required.'),
+    'invalid': _('Enter a valid email address.'),
+    'blank': _('Email cannot be blank.')
+}
+
+class RegisterSerializer(PasswordValidationAndConfirmationMixin):
+    email = serializers.EmailField(
+        required=True,
+        validators=[
+            UniqueValidator(
+                queryset=User.objects.all(),
+                message=_('A user with that email already exists.')
+            )
+        ],
+        error_messages=EMAIL_FIELD_ERROR_MESSAGES
+    )
+    role = serializers.ChoiceField(
+        choices=[('customer', 'Customer'), ('restaurant', 'Restaurant'), ('courier', 'Courier')],
+        required=False,
+        default='customer'
+    )
+
     class Meta:
         model = User
         fields = ('id', 'email', 'password', 'password_confirm', 'role')
@@ -35,11 +58,7 @@ class RegisterSerializer(PasswordValidationAndConfirmationMixin, serializers.Mod
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField(
         required=True,
-        error_messages={
-            'required': _('Email is required.'),
-            'invalid': _('Enter a valid email address.'),
-            'blank': _('Email cannot be blank.')
-        }
+        error_messages=EMAIL_FIELD_ERROR_MESSAGES
     )
     password = serializers.CharField(
         write_only=True,
@@ -67,11 +86,7 @@ class PasswordResetRequestSerializer(serializers.Serializer):
     email = serializers.EmailField(
         required=True,
         help_text=_("The email address of the user who has forgotten their password."),
-        error_messages={
-            'required': _('Email is required.'),
-            'invalid': _('Enter a valid email address.'),
-            'blank': _('Email cannot be blank.')
-        }
+        error_messages=EMAIL_FIELD_ERROR_MESSAGES
     )
 
 

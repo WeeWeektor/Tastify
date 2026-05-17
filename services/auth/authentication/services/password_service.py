@@ -19,14 +19,14 @@ class PasswordService:
         except User.DoesNotExist:
             return
 
-        if not user.active or not user.is_verified:
+        if not user.is_active or not user.is_verified:
             return
 
         reset_token = str(uuid.uuid4())
 
         password_reset_service.store(user_id=str(user.id), token=reset_token)
 
-        email_template = PasswordResetEmail(to_email=user.email, reset_code=reset_token)
+        email_template = PasswordResetEmail(to_email=user.email, reset_token=reset_token)
         EmailSenderService.send(email_template)
 
     @classmethod

@@ -79,7 +79,7 @@ class LoginView(APIView):
     @extend_schema(
         summary="Авторизація користувача",
         description="Авторизує користувача та повертає JWT токени.",
-        request=OpenApiTypes.OBJECT,
+        request=LoginSerializer,
         responses={
             200: OpenApiResponse(description='Успішна авторизація'),
             400: OpenApiResponse(description='Помилка валідації даних'),
