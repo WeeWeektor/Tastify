@@ -105,6 +105,8 @@ class RefreshTokenBlacklist(models.Model):
     blacklisted_at = models.DateTimeField(_('blacklisted at'), auto_now_add=True)
     expires_at = models.DateTimeField(_('expires at'), db_index=True)
 
+    objects = models.Manager()
+
     class Meta:
         verbose_name = _('blacklisted refresh token')
         verbose_name_plural = _('blacklisted refresh tokens')

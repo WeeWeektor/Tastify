@@ -27,3 +27,4 @@ class RedisTokenService:
 
 email_verification_service = RedisTokenService(prefix="email_verification", ttl_seconds=24 * 3600)
 password_reset_service = RedisTokenService(prefix="password_reset", ttl_seconds=3600)
+token_blacklist_service = RedisTokenService(prefix="blacklist", ttl_seconds=7 * 24 * 3600)

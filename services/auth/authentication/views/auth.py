@@ -3,8 +3,10 @@ from drf_spectacular.utils import extend_schema, OpenApiResponse, OpenApiParamet
 from rest_framework import permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework_simplejwt.views import TokenRefreshView
 
-from authentication.serializers import RegisterSerializer
+from authentication.serializers import RegisterSerializer, LoginSerializer, LogoutSerializer, \
+    CustomTokenRefreshSerializer
 from authentication.services import AuthenticationService
 
 
@@ -69,3 +71,77 @@ class VerifyEmailView(APIView):
             {"message": _("Your email address has been successfully verified.")},
             status=status.HTTP_200_OK
         )
+
+
+class LoginView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    @extend_schema(
+        summary="Авторизація користувача",
+        description="Авторизує користувача та повертає JWT токени.",
+        request=OpenApiTypes.OBJECT,
+        responses={
+            200: OpenApiResponse(description='Успішна авторизація'),
+            400: OpenApiResponse(description='Помилка валідації даних'),
+            401: OpenApiResponse(description='Невірні облікові дані або не підтверджений email'),
+        },
+        tags=['Authentication']
+    )
+    def post(self, request):
+        serializer = LoginSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        if x_forwarded_for:
+            ip = x_forwarded_for.split(',')[0]
+        else:
+            ip = request.META.get('REMOTE_ADDR')
+
+        tokens = AuthenticationService.login(
+            email=serializer.validated_data['email'],
+            password=serializer.validated_data['password'],
+            ip_address=ip
+        )
+
+        return Response(tokens, status=status.HTTP_200_OK)
+
+
+class LogoutView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    @extend_schema(
+        summary="Вихід з системи",
+        description=(
+                "Блокує refresh токен, щоб користувач не міг використовувати його для отримання нових access токенів."
+        ),
+        request=LogoutSerializer,
+        responses={
+            204: OpenApiResponse(description='Успішний вихід, токен заблоковано'),
+            400: OpenApiResponse(description='Невірний або відсутній токен'),
+            401: OpenApiResponse(description='Користувач не авторизований'),
+        },
+        tags=['Authentication']
+    )
+    def post(self, request):
+        serializer = LogoutSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        AuthenticationService.logout(serializer.validated_data['refresh'])
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class CustomTokenRefreshView(TokenRefreshView):
+    """
+    Перевизначений ендпоінт для оновлення access токена.
+    Він автоматично використовує логіку перевірки чорного списку.
+    """
+    serializer_class = CustomTokenRefreshSerializer
+
+    @extend_schema(
+        summary="Оновлення JWT токена (Refresh)",
+        description="Приймає якісний refresh токен, перевіряє його за чорними списками Redis/БД і видає новий свіжий access токен.",
+        tags=['Authentication']
+    )
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
