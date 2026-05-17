@@ -1,0 +1,391 @@
+services:
+  # ─────────────────────────────────────────
+  # POSTGRESQL
+  # ─────────────────────────────────────────
+  postgres_auth:
+    image: postgres:16
+    container_name: tastify_postgres_auth
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${AUTH_DB_NAME}
+      POSTGRES_USER: ${AUTH_DB_USER}
+      POSTGRES_PASSWORD: ${AUTH_DB_PASSWORD}
+    ports:
+      - "5532:5432"
+    volumes:
+      - postgres_auth_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${AUTH_DB_USER} -d ${AUTH_DB_NAME}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - tastify_network
+
+#  postgres_user:
+#    image: postgres:16
+#    container_name: tastify_postgres_user
+#    restart: unless-stopped
+#    environment:
+#      POSTGRES_DB: ${USER_DB_NAME}
+#      POSTGRES_USER: ${USER_DB_USER}
+#      POSTGRES_PASSWORD: ${USER_DB_PASSWORD}
+#    ports:
+#      - "5533:5432"
+#    volumes:
+#      - postgres_user_data:/var/lib/postgresql/data
+#    healthcheck:
+#      test: [ "CMD-SHELL", "pg_isready -U ${USER_DB_USER} -d ${USER_DB_NAME}" ]
+#      interval: 10s
+#      timeout: 5s
+#      retries: 5
+#    networks:
+#      - tastify_network
+#
+#  postgres_restaurant:
+#    image: postgres:16
+#    container_name: tastify_postgres_restaurant
+#    restart: unless-stopped
+#    environment:
+#      POSTGRES_DB: ${RESTAURANT_DB_NAME}
+#      POSTGRES_USER: ${RESTAURANT_DB_USER}
+#      POSTGRES_PASSWORD: ${RESTAURANT_DB_PASSWORD}
+#    ports:
+#      - "5534:5432"
+#    volumes:
+#      - postgres_restaurant_data:/var/lib/postgresql/data
+#    healthcheck:
+#      test: [ "CMD-SHELL", "pg_isready -U ${RESTAURANT_DB_USER} -d ${RESTAURANT_DB_NAME}" ]
+#      interval: 10s
+#      timeout: 5s
+#      retries: 5
+#    networks:
+#      - tastify_network
+#
+#  postgres_order:
+#    image: postgres:16
+#    container_name: tastify_postgres_order
+#    restart: unless-stopped
+#    environment:
+#      POSTGRES_DB: ${ORDER_DB_NAME}
+#      POSTGRES_USER: ${ORDER_DB_USER}
+#      POSTGRES_PASSWORD: ${ORDER_DB_PASSWORD}
+#    ports:
+#      - "5535:5432"
+#    volumes:
+#      - postgres_order_data:/var/lib/postgresql/data
+#    healthcheck:
+#      test: [ "CMD-SHELL", "pg_isready -U ${ORDER_DB_USER} -d ${ORDER_DB_NAME}" ]
+#      interval: 10s
+#      timeout: 5s
+#      retries: 5
+#    networks:
+#      - tastify_network
+#
+#  postgres_delivery:
+#    image: postgis/postgis:16-3.4
+#    container_name: tastify_postgres_delivery
+#    restart: unless-stopped
+#    environment:
+#      POSTGRES_DB: ${DELIVERY_DB_NAME}
+#      POSTGRES_USER: ${DELIVERY_DB_USER}
+#      POSTGRES_PASSWORD: ${DELIVERY_DB_PASSWORD}
+#    ports:
+#      - "5536:5432"
+#    volumes:
+#      - postgres_delivery_data:/var/lib/postgresql/data
+#    healthcheck:
+#      test: [ "CMD-SHELL", "pg_isready -U ${DELIVERY_DB_USER} -d ${DELIVERY_DB_NAME}" ]
+#      interval: 10s
+#      timeout: 5s
+#      retries: 5
+#    networks:
+#      - tastify_network
+#
+#  postgres_payment:
+#    image: postgres:16
+#    container_name: tastify_postgres_payment
+#    restart: unless-stopped
+#    environment:
+#      POSTGRES_DB: ${PAYMENT_DB_NAME}
+#      POSTGRES_USER: ${PAYMENT_DB_USER}
+#      POSTGRES_PASSWORD: ${PAYMENT_DB_PASSWORD}
+#    ports:
+#      - "5537:5432"
+#    volumes:
+#      - postgres_payment_data:/var/lib/postgresql/data
+#    healthcheck:
+#      test: [ "CMD-SHELL", "pg_isready -U ${PAYMENT_DB_USER} -d ${PAYMENT_DB_NAME}" ]
+#      interval: 10s
+#      timeout: 5s
+#      retries: 5
+#    networks:
+#      - tastify_network
+#
+#  postgres_review:
+#    image: postgres:16
+#    container_name: tastify_postgres_review
+#    restart: unless-stopped
+#    environment:
+#      POSTGRES_DB: ${REVIEW_DB_NAME}
+#      POSTGRES_USER: ${REVIEW_DB_USER}
+#      POSTGRES_PASSWORD: ${REVIEW_DB_PASSWORD}
+#    ports:
+#      - "5538:5432"
+#    volumes:
+#      - postgres_review_data:/var/lib/postgresql/data
+#    healthcheck:
+#      test: [ "CMD-SHELL", "pg_isready -U ${REVIEW_DB_USER} -d ${REVIEW_DB_NAME}" ]
+#      interval: 10s
+#      timeout: 5s
+#      retries: 5
+#    networks:
+#      - tastify_network
+#
+#  postgres_notification:
+#    image: postgres:16
+#    container_name: tastify_postgres_notification
+#    restart: unless-stopped
+#    environment:
+#      POSTGRES_DB: ${NOTIFICATION_DB_NAME}
+#      POSTGRES_USER: ${NOTIFICATION_DB_USER}
+#      POSTGRES_PASSWORD: ${NOTIFICATION_DB_PASSWORD}
+#    ports:
+#      - "5539:5432"
+#    volumes:
+#      - postgres_notification_data:/var/lib/postgresql/data
+#    healthcheck:
+#      test: [ "CMD-SHELL", "pg_isready -U ${NOTIFICATION_DB_USER} -d ${NOTIFICATION_DB_NAME}" ]
+#      interval: 10s
+#      timeout: 5s
+#      retries: 5
+#    networks:
+#      - tastify_network
+#
+#  postgres_analytics:
+#    image: postgres:16
+#    container_name: tastify_postgres_analytics
+#    restart: unless-stopped
+#    environment:
+#      POSTGRES_DB: ${ANALYTICS_DB_NAME}
+#      POSTGRES_USER: ${ANALYTICS_DB_USER}
+#      POSTGRES_PASSWORD: ${ANALYTICS_DB_PASSWORD}
+#    ports:
+#      - "5540:5432"
+#    volumes:
+#      - postgres_analytics_data:/var/lib/postgresql/data
+#    healthcheck:
+#      test: [ "CMD-SHELL", "pg_isready -U ${ANALYTICS_DB_USER} -d ${ANALYTICS_DB_NAME}" ]
+#      interval: 10s
+#      timeout: 5s
+#      retries: 5
+#    networks:
+#      - tastify_network
+#
+#  postgres_billing:
+#    image: postgres:16
+#    container_name: tastify_postgres_billing
+#    restart: unless-stopped
+#    environment:
+#      POSTGRES_DB: ${BILLING_DB_NAME}
+#      POSTGRES_USER: ${BILLING_DB_USER}
+#      POSTGRES_PASSWORD: ${BILLING_DB_PASSWORD}
+#    ports:
+#      - "5541:5432"
+#    volumes:
+#      - postgres_billing_data:/var/lib/postgresql/data
+#    healthcheck:
+#      test: [ "CMD-SHELL", "pg_isready -U ${BILLING_DB_USER} -d ${BILLING_DB_NAME}" ]
+#      interval: 10s
+#      timeout: 5s
+#      retries: 5
+#    networks:
+#      - tastify_network
+
+  # ─────────────────────────────────────────
+  # REDIS
+  # ─────────────────────────────────────────
+  redis:
+    image: redis:7.4-alpine
+    container_name: tastify_redis
+    restart: unless-stopped
+    command: >
+      redis-server
+      --requirepass ${REDIS_PASSWORD}
+      --maxmemory 512mb
+      --maxmemory-policy allkeys-lru
+      --save 60 1
+      --loglevel warning
+    ports:
+      - "6679:6379"
+    volumes:
+      - redis_data:/data
+    environment:
+      REDISCLI_AUTH: ${REDIS_PASSWORD}
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    networks:
+      - tastify_network
+
+  # ─────────────────────────────────────────
+  # ZOOKEEPER + KAFKA
+  # ─────────────────────────────────────────
+#  zookeeper:
+#    image: confluentinc/cp-zookeeper:7.7.0
+#    container_name: tastify_zookeeper
+#    restart: unless-stopped
+#    environment:
+#      ZOOKEEPER_CLIENT_PORT: 2181
+#      ZOOKEEPER_TICK_TIME: 2000
+#      ZOOKEEPER_LOG4J_ROOT_LOGLEVEL: WARN
+#    ports:
+#      - "2181:2181"
+#    volumes:
+#      - zookeeper_data:/var/lib/zookeeper/data
+#      - zookeeper_logs:/var/lib/zookeeper/log
+#    healthcheck:
+#      test: [ "CMD-SHELL", "echo ruok | nc localhost 2181 | grep imok" ]
+#      interval: 10s
+#      timeout: 5s
+#      retries: 5
+#    networks:
+#      - tastify_network
+#
+#  kafka:
+#    image: confluentinc/cp-kafka:7.7.0
+#    container_name: tastify_kafka
+#    restart: unless-stopped
+#    depends_on:
+#      zookeeper:
+#        condition: service_healthy
+#    environment:
+#      KAFKA_BROKER_ID: 1
+#      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+#      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+#      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+#      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+#      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+#      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'false'
+#      KAFKA_LOG_RETENTION_HOURS: 168
+#      KAFKA_LOG4J_ROOT_LOGLEVEL: WARN
+#      KAFKA_TOOLS_LOG4J_LOGLEVEL: ERROR
+#    ports:
+#      - "29092:29092"
+#    volumes:
+#      - kafka_data:/var/lib/kafka/data
+#    healthcheck:
+#      test: [ "CMD-SHELL", "kafka-topics --bootstrap-server localhost:9092 --list" ]
+#      interval: 15s
+#      timeout: 10s
+#      retries: 10
+#      start_period: 30s
+#    networks:
+#      - tastify_network
+
+  # ─────────────────────────────────────────
+  # ELASTICSEARCH
+  # ─────────────────────────────────────────
+#  elasticsearch:
+#    image: elasticsearch:8.15.1
+#    container_name: tastify_elasticsearch
+#    restart: unless-stopped
+#    environment:
+#      - discovery.type=single-node
+#      - xpack.security.enabled=false
+#      - xpack.security.http.ssl.enabled=false
+#      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+#      - cluster.name=tastify-cluster
+#      - bootstrap.memory_lock=true
+#    ulimits:
+#      memlock:
+#        soft: -1
+#        hard: -1
+#    ports:
+#      - "9200:9200"
+#    volumes:
+#      - elasticsearch_data:/usr/share/elasticsearch/data
+#    healthcheck:
+#      test: [ "CMD-SHELL", "curl -s http://localhost:9200/_cluster/health | grep -v '\"status\":\"red\"'" ]
+#      interval: 15s
+#      timeout: 10s
+#      retries: 10
+#      start_period: 30s
+#    networks:
+#      - tastify_network
+
+  # ─────────────────────────────────────────
+  # MINIO
+  # Веб-консоль: http://localhost:9001
+  # API: http://localhost:9000
+  # ─────────────────────────────────────────
+#  minio:
+#    image: minio/minio:latest
+#    container_name: tastify_minio
+#    restart: unless-stopped
+#    command: server /data --console-address ":9001"
+#    environment:
+#      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+#      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+#    ports:
+#      - "9000:9000"
+#      - "9001:9001"
+#    volumes:
+#      - minio_data:/data
+#    healthcheck:
+#      test: [ "CMD-SHELL", "curl -f http://localhost:9000/minio/health/live || exit 1" ]
+#      interval: 15s
+#      timeout: 5s
+#      retries: 5
+#    networks:
+#      - tastify_network
+
+  # ─────────────────────────────────────────
+  # MLFLOW
+  # UI: http://localhost:5000
+  # ─────────────────────────────────────────
+#  mlflow:
+#    image: ghcr.io/mlflow/mlflow:v2.16.0
+#    container_name: tastify_mlflow
+#    restart: unless-stopped
+#    command: >
+#      mlflow server
+#      --host 0.0.0.0
+#      --port 5000
+#      --backend-store-uri sqlite:///mlflow.db
+#      --default-artifact-root /mlflow/artifacts
+#    ports:
+#      - "5000:5000"
+#    volumes:
+#      - mlflow_data:/mlflow
+#    healthcheck:
+#      test: [ "CMD-SHELL", "curl -f http://localhost:5000/health || exit 1" ]
+#      interval: 15s
+#      timeout: 5s
+#      retries: 5
+#    networks:
+#      - tastify_network
+
+# ─────────────────────────────────────────
+# VOLUMES
+# ─────────────────────────────────────────
+volumes:
+  postgres_auth_data:
+#  postgres_user_data:
+#  postgres_restaurant_data:
+#  postgres_order_data:
+#  postgres_delivery_data:
+#  postgres_payment_data:
+#  postgres_review_data:
+#  postgres_notification_data:
+#  postgres_analytics_data:
+#  postgres_billing_data:
+  redis_data:
+#  zookeeper_data:
+#  zookeeper_logs:
+#  kafka_data:
+#  elasticsearch_data:
+#  minio_data:
+#  mlflow_data:

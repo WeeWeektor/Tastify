@@ -1,0 +1,67 @@
+services:
+  auth_service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: auth_service
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      - DATABASE_URL=postgres://${AUTH_DB_USER}:${AUTH_DB_PASSWORD}@postgres_auth:5432/${AUTH_DB_NAME}
+      - REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379/0
+    depends_on:
+      postgres_auth:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - tastify_network
+
+  auth_celery_worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: auth_celery_worker
+    command: celery -A core worker -l INFO
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    environment:
+      - DATABASE_URL=postgres://${AUTH_DB_USER}:${AUTH_DB_PASSWORD}@postgres_auth:5432/${AUTH_DB_NAME}
+      - REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379/0
+    depends_on:
+      postgres_auth:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - tastify_network
+
+  auth_celery_beat:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: auth_celery_beat
+    command: celery -A core beat -l INFO
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    environment:
+      - DATABASE_URL=postgres://${AUTH_DB_USER}:${AUTH_DB_PASSWORD}@postgres_auth:5432/${AUTH_DB_NAME}
+      - REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379/0
+    depends_on:
+      redis:
+        condition: service_healthy
+      postgres_auth:
+        condition: service_healthy
+    networks:
+      - tastify_network
