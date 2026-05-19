@@ -1,6 +1,7 @@
 import uuid
 
 from django.contrib.auth import get_user_model
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from rest_framework.exceptions import ValidationError
 
@@ -40,7 +41,8 @@ class PasswordService:
         try:
             user = User.objects.get(id=user_id)
             user.set_password(new_password)
-            user.save(update_fields=['password'])
+            user.last_login = timezone.now()
+            user.save(update_fields=['password', 'last_login'])
 
             password_reset_service.delete(token)
         except User.DoesNotExist:

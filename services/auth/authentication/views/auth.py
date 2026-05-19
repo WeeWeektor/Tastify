@@ -30,7 +30,7 @@ class RegisterView(APIView):
         AuthenticationService.register(
             email=serializer.validated_data['email'],
             password=serializer.validated_data['password'],
-            role=serializer.validated_data.get('role', 'customer')
+            role='customer'
         )
 
         return Response(

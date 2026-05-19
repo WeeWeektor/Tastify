@@ -1,10 +1,12 @@
+from datetime import datetime, timezone
+
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
+from rest_framework.validators import UniqueValidator
 from rest_framework_simplejwt.exceptions import InvalidToken
 from rest_framework_simplejwt.serializers import TokenRefreshSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.validators import UniqueValidator
 
 from authentication.mixins import PasswordValidationAndConfirmationMixin
 from authentication.models import RefreshTokenBlacklist
@@ -12,12 +14,12 @@ from authentication.services.token_service import token_blacklist_service
 
 User = get_user_model()
 
-
 EMAIL_FIELD_ERROR_MESSAGES = {
     'required': _('Email is required.'),
     'invalid': _('Enter a valid email address.'),
     'blank': _('Email cannot be blank.')
 }
+
 
 class RegisterSerializer(PasswordValidationAndConfirmationMixin):
     email = serializers.EmailField(
@@ -30,29 +32,15 @@ class RegisterSerializer(PasswordValidationAndConfirmationMixin):
         ],
         error_messages=EMAIL_FIELD_ERROR_MESSAGES
     )
-    role = serializers.ChoiceField(
-        choices=[('customer', 'Customer'), ('restaurant', 'Restaurant'), ('courier', 'Courier')],
-        required=False,
-        default='customer'
-    )
 
     class Meta:
         model = User
-        fields = ('id', 'email', 'password', 'password_confirm', 'role')
+        fields = ('id', 'email', 'password', 'password_confirm')
         extra_kwargs = {
             'email': {'required': True},
             'role': {'required': True},
         }
         read_only_fields = ('id',)
-
-    def create(self, validated_data):
-        validated_data.pop('password_confirm', None)
-        user = User.objects.create_user(
-            email=validated_data['email'],
-            password=validated_data['password'],
-            role=validated_data.get('role', 'customer')
-        )
-        return user
 
 
 class LoginSerializer(serializers.Serializer):
@@ -112,10 +100,22 @@ class CustomTokenRefreshSerializer(TokenRefreshSerializer):
         refresh = RefreshToken(refresh_token_str)
         jti = refresh.payload.get('jti')
 
+        user_id = refresh.payload.get('user_id')
+        iat_timestamp = refresh.payload.get('iat')
+
         if token_blacklist_service.get_user_id_from_verification_token(jti):
             raise InvalidToken(_("This token has been blacklisted."))
 
         if RefreshTokenBlacklist.objects.filter(jti=jti).exists():
             raise InvalidToken(_("This token has been blacklisted."))
+
+        try:
+            user = User.objects.get(id=user_id)
+            token_issued_at = datetime.fromtimestamp(iat_timestamp, tz=timezone.utc)
+
+            if user.last_login and token_issued_at < user.last_login:
+                raise InvalidToken(_("Password was changed. Please log in again."))
+        except User.DoesNotExist:
+            raise InvalidToken(_("User not found."))
 
         return data
