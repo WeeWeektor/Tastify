@@ -20,6 +20,12 @@ EMAIL_FIELD_ERROR_MESSAGES = {
     'blank': _('Email cannot be blank.')
 }
 
+CODE_FIELD_ERROR_MESSAGES = {
+    'required': _('Code is required.'),
+    'min_length': _('Code must be exactly 6 digits.'),
+    'max_length': _('Code must be exactly 6 digits.')
+}
+
 
 class RegisterSerializer(PasswordValidationAndConfirmationMixin):
     email = serializers.EmailField(
@@ -38,7 +44,6 @@ class RegisterSerializer(PasswordValidationAndConfirmationMixin):
         fields = ('id', 'email', 'password', 'password_confirm')
         extra_kwargs = {
             'email': {'required': True},
-            'role': {'required': True},
         }
         read_only_fields = ('id',)
 
@@ -119,3 +124,27 @@ class CustomTokenRefreshSerializer(TokenRefreshSerializer):
             raise InvalidToken(_("User not found."))
 
         return data
+
+
+class Code2FASerializer(serializers.Serializer):
+    code = serializers.CharField(
+        max_length=6,
+        min_length=6,
+        required=True,
+        error_messages=CODE_FIELD_ERROR_MESSAGES
+    )
+
+
+class Verify2FALoginSerializer(serializers.Serializer):
+    pre_auth_token = serializers.CharField(
+        required=True,
+        error_messages={
+            'required': _('Pre-auth token is required.')
+        }
+    )
+    code = serializers.CharField(
+        max_length=6,
+        min_length=6,
+        required=True,
+        error_messages=CODE_FIELD_ERROR_MESSAGES
+    )

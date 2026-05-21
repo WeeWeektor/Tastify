@@ -1,7 +1,7 @@
 def mark_social_user_verified(backend, user, response, *args, **kwargs):
     """
-        Кастомний крок для SOCIAL_AUTH_PIPELINE.
-        Автоматично підтверджує email для користувачів, які зайшли через Google.
+        Кастомний крок пайплайну. Активує юзера та ініціює
+        створення профілю в іншому сервісі.
     """
 
     if backend.name == 'google-oauth2':
@@ -26,7 +26,7 @@ def mark_social_user_verified(backend, user, response, *args, **kwargs):
         # google_avatar_url = response.get('picture')
         #
         # # Генеруємо подію для іншого сервісу.
-        # # Оскільки ми в транзакції, найкраще викликати асинхронну таску Celery,
+        # # Оскільки в транзакції, найкраще викликати асинхронну таску Celery,
         # # яка відправить подію в Kafka після успішного коміту в БД.
         # from authentication.tasks import send_user_created_event
         #

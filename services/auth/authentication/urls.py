@@ -10,6 +10,9 @@ from authentication.views import (
     PasswordResetConfirmView,
     GoogleOAuthView,
     GoogleOAuthCallbackView,
+    Enable2FAView,
+    Setup2FAView,
+    Verify2FALoginView
 )
 
 auth_patterns = [
@@ -31,7 +34,9 @@ social_patterns = [
 ]
 
 two_factor_patterns = [
-
+    path('setup/', Setup2FAView.as_view(), name='2fa_setup'),
+    path('enable/', Enable2FAView.as_view(), name='2fa_enable'),
+    path('verify/', Verify2FALoginView.as_view(), name='2fa_verify_login'),
 ]
 
 urlpatterns = [

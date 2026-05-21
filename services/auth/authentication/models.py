@@ -73,6 +73,9 @@ class User(AbstractBaseUser, PermissionsMixin):
         blank=True
     )
 
+    is_2fa_enabled = models.BooleanField(default=False, verbose_name="2FA Enabled")
+    totp_secret = models.CharField(max_length=32, blank=True, null=True, verbose_name="TOTP Secret")
+
     objects = CustomUserManager()
 
     USERNAME_FIELD = 'email'

@@ -11,7 +11,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from authentication.models import RefreshTokenBlacklist
 from authentication.tasks import send_verification_email_task
-from .token_service import email_verification_service, token_blacklist_service
+from .token_service import email_verification_service, token_blacklist_service, pre_auth_service
+from .two_factor_service import TwoFactorService
 
 User = get_user_model()
 logger = logging.getLogger(__name__)
@@ -57,9 +58,37 @@ class AuthenticationService:
             raise ValidationError({"token": _("The token is invalid or has expired.")})
 
     @classmethod
+    def _finalize_login(cls, user, ip_address: str = None) -> dict:
+        """
+            Приватний метод. Викликається тільки після того, як користувач
+            ПОВНІСТЮ підтвердив свою особу (пароль + 2FA, якщо увімкнена).
+        """
+        if ip_address:
+            user.last_login_ip = ip_address
+            user.save(update_fields=['last_login_ip'])
+
+        update_last_login(None, user)
+
+        refresh = RefreshToken.for_user(user)
+        access = refresh.access_token
+
+        refresh['role'] = user.role
+        refresh['email'] = user.email
+
+        access['role'] = user.role
+        access['email'] = user.email
+
+        return {
+            "requires_2fa": False,
+            "pre_auth_token": None,
+            'refresh': str(refresh),
+            'access': str(access),
+        }
+
+    @classmethod
     def login(cls, email: str, password: str, ip_address: str = None) -> dict:
         """
-            Логін користувача з генерацією JWT токенів та логуванням IP.
+            Логін користувача з перевіркою двофакторної автентифікації.
         """
         try:
             user = User.objects.get(email=email)
@@ -75,21 +104,40 @@ class AuthenticationService:
         if not user.is_active:
             raise ValidationError({"detail": _("Your account has been deactivated.")})
 
-        if ip_address:
-            user.last_login_ip = ip_address
-            user.save(update_fields=['last_login_ip'])
+        if user.is_2fa_enabled:
+            pre_auth_token = str(uuid.uuid4())
+            pre_auth_service.store(user_id=str(user.id), token=pre_auth_token)
 
-        update_last_login(None, user)
+            return {
+                "requires_2fa": True,
+                "pre_auth_token": pre_auth_token,
+                "refresh": None,
+                "access": None,
+            }
 
-        refresh = RefreshToken.for_user(user)
+        return cls._finalize_login(user, ip_address)
 
-        refresh['role'] = user.role
-        refresh['email'] = user.email
+    @classmethod
+    def verify_2fa_login(cls, pre_auth_token: str, code: str, ip_address: str = None) -> dict:
+        """
+            Перевіряє 2FA код за тимчасовим токеном і завершує процес авторизації.
+        """
+        user_id = pre_auth_service.get_user_id_from_verification_token(pre_auth_token)
+        if not user_id:
+            raise ValidationError({"pre_auth_token": _("The token is invalid or has expired.")})
 
-        return {
-            'refresh': str(refresh),
-            'access': str(refresh.access_token),
-        }
+        try:
+            user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            raise ValidationError({"detail": _("User not found.")})
+
+        if not TwoFactorService.verify_login_token(user, code):
+            raise ValidationError({"code": _("Invalid 2FA code.")})
+
+        pre_auth_service.delete(pre_auth_token)
+
+        return cls._finalize_login(user, ip_address)
+
 
     @classmethod
     def logout(cls, refresh_token_str: str) -> None:

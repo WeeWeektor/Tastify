@@ -8,6 +8,7 @@ from rest_framework_simplejwt.views import TokenRefreshView
 from authentication.serializers import RegisterSerializer, LoginSerializer, LogoutSerializer, \
     CustomTokenRefreshSerializer
 from authentication.services import AuthenticationService
+from authentication.utils import get_client_ip
 
 
 class RegisterView(APIView):
@@ -91,19 +92,25 @@ class LoginView(APIView):
         serializer = LoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
-        if x_forwarded_for:
-            ip = x_forwarded_for.split(',')[0]
-        else:
-            ip = request.META.get('REMOTE_ADDR')
+        ip_address = get_client_ip(request)
 
-        tokens = AuthenticationService.login(
+        result = AuthenticationService.login(
             email=serializer.validated_data['email'],
             password=serializer.validated_data['password'],
-            ip_address=ip
+            ip_address=ip_address
         )
 
-        return Response(tokens, status=status.HTTP_200_OK)
+        if result.get("requires_2fa"):
+            return Response({
+                "requires_2fa": True,
+                "pre_auth_token": result["pre_auth_token"],
+                "message": _("Please enter your 2FA code.")
+            }, status=status.HTTP_200_OK)
+
+        return Response({
+            "refresh": result["refresh"],
+            "access": result["access"]
+        }, status=status.HTTP_200_OK)
 
 
 class LogoutView(APIView):
