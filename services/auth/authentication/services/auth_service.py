@@ -17,6 +17,8 @@ from .two_factor_service import TwoFactorService
 User = get_user_model()
 logger = logging.getLogger(__name__)
 
+ERROR_MESSAGES_FOR_TOKEN = _("The token is invalid or has expired.")
+
 
 class AuthenticationService:
     @classmethod
@@ -44,7 +46,7 @@ class AuthenticationService:
         user_id = email_verification_service.get_user_id_from_verification_token(token)
 
         if not user_id:
-            raise ValidationError({"token": _("The token is invalid or has expired.")})
+            raise ValidationError({"token": ERROR_MESSAGES_FOR_TOKEN})
 
         try:
             user = User.objects.get(id=user_id)
@@ -55,7 +57,7 @@ class AuthenticationService:
                 email_verification_service.delete(token)
             return True
         except User.DoesNotExist:
-            raise ValidationError({"token": _("The token is invalid or has expired.")})
+            raise ValidationError({"token": ERROR_MESSAGES_FOR_TOKEN})
 
     @classmethod
     def _finalize_login(cls, user, ip_address: str = None) -> dict:
@@ -124,7 +126,7 @@ class AuthenticationService:
         """
         user_id = pre_auth_service.get_user_id_from_verification_token(pre_auth_token)
         if not user_id:
-            raise ValidationError({"pre_auth_token": _("The token is invalid or has expired.")})
+            raise ValidationError({"pre_auth_token": ERROR_MESSAGES_FOR_TOKEN})
 
         try:
             user = User.objects.get(id=user_id)
