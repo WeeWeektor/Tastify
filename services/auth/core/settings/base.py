@@ -91,7 +91,7 @@ AUTHENTICATION_BACKENDS = (
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = env('GOOGLE_CLIENT_ID')
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = env('GOOGLE_CLIENT_SECRET')
 SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ['email', 'profile']
-GOOGLE_OAUTH2_CALLBACK_URL = 'http://localhost:8000/api/v1/auth/social/google/callback/'
+GOOGLE_OAUTH2_CALLBACK_URL = 'http://localhost:8001/api/v1/auth/social/google/callback/'
 
 SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.social_auth.social_details',

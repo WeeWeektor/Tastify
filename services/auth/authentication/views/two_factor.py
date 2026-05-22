@@ -4,10 +4,10 @@ from drf_spectacular.utils import extend_schema, OpenApiResponse
 from rest_framework import permissions, status, views
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
+from shared.ip_utils import get_client_ip
 
 from authentication.serializers import Code2FASerializer, Verify2FALoginSerializer
 from authentication.services import AuthenticationService, TwoFactorService
-from authentication.utils import get_client_ip
 
 User = get_user_model()
 

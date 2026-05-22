@@ -4,11 +4,11 @@ from rest_framework import permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenRefreshView
+from shared.ip_utils import get_client_ip
 
 from authentication.serializers import RegisterSerializer, LoginSerializer, LogoutSerializer, \
     CustomTokenRefreshSerializer
 from authentication.services import AuthenticationService
-from authentication.utils import get_client_ip
 
 
 class RegisterView(APIView):
