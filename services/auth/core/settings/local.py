@@ -1,4 +1,5 @@
 from .base import *
+import sys
 
 DEBUG = True
 
@@ -22,3 +23,17 @@ LOGGING = {
         'level': 'INFO',
     },
 }
+
+if 'pytest' in sys.modules:
+    print("🚀 Pytest detected: Using SQLite in-memory database for tests.")
+
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': ':memory:',
+        }
+    }
+
+    PASSWORD_HASHERS = [
+        'django.contrib.auth.hashers.MD5PasswordHasher',
+    ]

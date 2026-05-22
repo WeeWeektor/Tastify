@@ -1,7 +1,7 @@
 import os
 from datetime import timedelta
 from pathlib import Path
-
+from django.utils.translation import gettext_lazy as _
 import environ
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -37,6 +37,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'shared.GlobalLanguageMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -124,7 +125,20 @@ PASSWORD_HASHERS = [
 
 AUTH_USER_MODEL = 'authentication.User'
 
-LANGUAGE_CODE = 'en-us'
+# LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'en'
+LANGUAGES = [
+    ('en', _('English')),
+    ('uk', _('Ukrainian')),
+]
+LOCALE_PATHS = [
+   str(BASE_DIR / 'locale'),
+]
+LANGUAGE_COOKIE_NAME = 'django_language'
+LANGUAGE_COOKIE_DOMAIN = None
+LANGUAGE_COOKIE_PATH = '/'
+
+
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True

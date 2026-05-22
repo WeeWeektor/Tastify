@@ -5,6 +5,7 @@ from datetime import datetime, timezone
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import update_last_login
 from django.db import transaction
+from django.utils import translation
 from django.utils.translation import gettext_lazy as _
 from rest_framework.exceptions import ValidationError
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -28,13 +29,21 @@ class AuthenticationService:
              Реєстрація нового користувача.
              Використовує транзакцію, щоб у разі помилки відправки листа юзер не створювався в БД.
         """
-        user = User.objects.create_user(email=email, password=password, role=role, **extra_fields)
+        current_language = translation.get_language()
+
+        user = User.objects.create_user(
+            email=email,
+            password=password,
+            role=role,
+            language=current_language,
+            **extra_fields
+        )
 
         verification_token = str(uuid.uuid4())
 
         email_verification_service.store(value=str(user.id), key=verification_token)
 
-        send_verification_email_task.delay(user.email, verification_token)
+        send_verification_email_task.delay(user.email, verification_token, current_language)
 
         return user
 
@@ -139,7 +148,6 @@ class AuthenticationService:
         pre_auth_service.delete(key=pre_auth_token)
 
         return cls._finalize_login(user, ip_address)
-
 
     @classmethod
     def logout(cls, refresh_token_str: str) -> None:

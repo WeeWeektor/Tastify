@@ -1,10 +1,11 @@
 import uuid
 
+from django.conf import settings
 from django.contrib.auth.base_user import BaseUserManager, AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.db import models
-from django.utils.translation import gettext_lazy as _
 from django.db.models import Q, F
+from django.utils.translation import gettext_lazy as _
 
 
 class CustomUserManager(BaseUserManager):
@@ -75,6 +76,13 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     is_2fa_enabled = models.BooleanField(default=False, verbose_name="2FA Enabled")
     totp_secret = models.CharField(max_length=32, blank=True, null=True, verbose_name="TOTP Secret")
+
+    language = models.CharField(
+        _('language'),
+        max_length=10,
+        choices=settings.LANGUAGES,
+        default=settings.LANGUAGE_CODE
+    )
 
     objects = CustomUserManager()
 

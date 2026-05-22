@@ -2,6 +2,7 @@ import logging
 
 from celery import shared_task
 from django.utils import timezone
+from django.utils import translation
 
 from .models import RefreshTokenBlacklist
 from .services.email_service import EmailSenderService, VerificationEmail
@@ -10,14 +11,19 @@ logger = logging.getLogger(__name__)
 
 
 @shared_task
-def send_verification_email_task(email: str, token: str):
+def send_verification_email_task(email: str, token: str, language: str):
     """
     Фонова задача для відправки листа.
     """
     logger.info(f"Starting background task to send verification email to {email}")
 
-    email_template = VerificationEmail(to_email=email, token=token)
-    success = EmailSenderService.send(email_template)
+    translation.activate(language)
+
+    try:
+        email_template = VerificationEmail(to_email=email, token=token)
+        success = EmailSenderService.send(email_template)
+    finally:
+        translation.deactivate()
 
     if success:
         logger.info(f"Successfully sent verification email to {email}")

@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema, OpenApiResponse
 from rest_framework import permissions, status, views
 from rest_framework.exceptions import ValidationError
