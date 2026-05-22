@@ -32,7 +32,7 @@ class AuthenticationService:
 
         verification_token = str(uuid.uuid4())
 
-        email_verification_service.store(user_id=str(user.id), token=verification_token)
+        email_verification_service.store(value=str(user.id), key=verification_token)
 
         send_verification_email_task.delay(user.email, verification_token)
 
@@ -43,7 +43,7 @@ class AuthenticationService:
         """
             Перевірка токена з Redis та активація акаунту.
         """
-        user_id = email_verification_service.get_user_id_from_verification_token(token)
+        user_id = email_verification_service.get_value(key=token)
 
         if not user_id:
             raise ValidationError({"token": ERROR_MESSAGES_FOR_TOKEN})
@@ -54,7 +54,7 @@ class AuthenticationService:
                 user.is_verified = True
                 user.save(update_fields=['is_verified'])
 
-                email_verification_service.delete(token)
+                email_verification_service.delete(key=token)
             return True
         except User.DoesNotExist:
             raise ValidationError({"token": ERROR_MESSAGES_FOR_TOKEN})
@@ -108,7 +108,7 @@ class AuthenticationService:
 
         if user.is_2fa_enabled:
             pre_auth_token = str(uuid.uuid4())
-            pre_auth_service.store(user_id=str(user.id), token=pre_auth_token)
+            pre_auth_service.store(value=str(user.id), key=pre_auth_token)
 
             return {
                 "requires_2fa": True,
@@ -124,7 +124,7 @@ class AuthenticationService:
         """
             Перевіряє 2FA код за тимчасовим токеном і завершує процес авторизації.
         """
-        user_id = pre_auth_service.get_user_id_from_verification_token(pre_auth_token)
+        user_id = pre_auth_service.get_value(key=pre_auth_token)
         if not user_id:
             raise ValidationError({"pre_auth_token": ERROR_MESSAGES_FOR_TOKEN})
 
@@ -136,7 +136,7 @@ class AuthenticationService:
         if not TwoFactorService.verify_login_token(user, code):
             raise ValidationError({"code": _("Invalid 2FA code.")})
 
-        pre_auth_service.delete(pre_auth_token)
+        pre_auth_service.delete(key=pre_auth_token)
 
         return cls._finalize_login(user, ip_address)
 
@@ -154,10 +154,10 @@ class AuthenticationService:
 
             expires_at = datetime.fromtimestamp(exp_timestamp, tz=timezone.utc)
 
-            if token_blacklist_service.get_user_id_from_verification_token(jti):
+            if token_blacklist_service.get_value(key=jti):
                 raise ValidationError({"detail": _("The token has already been blocked.")})
 
-            token_blacklist_service.store(user_id=str(user_id), token=jti)
+            token_blacklist_service.store(value=str(user_id), key=jti)
 
             if not RefreshTokenBlacklist.objects.filter(jti=jti).exists():
                 RefreshTokenBlacklist.objects.create(

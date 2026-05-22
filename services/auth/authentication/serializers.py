@@ -108,7 +108,7 @@ class CustomTokenRefreshSerializer(TokenRefreshSerializer):
         user_id = refresh.payload.get('user_id')
         iat_timestamp = refresh.payload.get('iat')
 
-        if token_blacklist_service.get_user_id_from_verification_token(jti):
+        if token_blacklist_service.get_value(key=jti):
             raise InvalidToken(_("This token has been blacklisted."))
 
         if RefreshTokenBlacklist.objects.filter(jti=jti).exists():
