@@ -1,29 +1,36 @@
 import logging
-from abc import ABC, abstractmethod
-from dataclasses import dataclass
 
 from django.conf import settings
 from django.core.mail import send_mail
 from django.utils.translation import gettext_lazy as _
 
+from shared import BaseEmailTemplate, EmailPayload
+
 logger = logging.getLogger(__name__)
 
 
-@dataclass
-class EmailPayload:
-    subject: str
-    message: str
-    html_message: str
-    recipients: list[str]
+class EmailSenderService:
+    """Єдина точка входу для відправки будь-яких листів."""
 
+    @staticmethod
+    def send(template: BaseEmailTemplate) -> bool:
+        payload = template.generate()
 
-class BaseEmailTemplate(ABC):
-    def __init__(self, to_email: str):
-        self.to_email = to_email
+        try:
+            send_mail(
+                subject=payload.subject,
+                message=payload.message,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=payload.recipients,
+                html_message=payload.html_message,
+                fail_silently=False,
+            )
+            logger.info(f"Email '{payload.subject}' successfully sent to {payload.recipients}")
+            return True
 
-    @abstractmethod
-    def generate(self) -> EmailPayload:
-        pass
+        except Exception as e:
+            logger.error(f"Failed to send email to {payload.recipients}: {str(e)}")
+            return False
 
 
 class VerificationEmail(BaseEmailTemplate):
@@ -104,27 +111,3 @@ class PasswordResetEmail(BaseEmailTemplate):
             html_message=html_message,
             recipients=[self.to_email]
         )
-
-
-class EmailSenderService:
-    """Єдина точка входу для відправки будь-яких листів."""
-
-    @staticmethod
-    def send(template: BaseEmailTemplate) -> bool:
-        payload = template.generate()
-
-        try:
-            send_mail(
-                subject=payload.subject,
-                message=payload.message,
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=payload.recipients,
-                html_message=payload.html_message,
-                fail_silently=False,
-            )
-            logger.info(f"Email '{payload.subject}' successfully sent to {payload.recipients}")
-            return True
-
-        except Exception as e:
-            logger.error(f"Failed to send email to {payload.recipients}: {str(e)}")
-            return False
