@@ -125,7 +125,6 @@ PASSWORD_HASHERS = [
 
 AUTH_USER_MODEL = 'authentication.User'
 
-# LANGUAGE_CODE = 'en-us'
 LANGUAGE_CODE = 'en'
 LANGUAGES = [
     ('en', _('English')),
