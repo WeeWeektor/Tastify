@@ -38,6 +38,7 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'shared.GlobalLanguageMiddleware',
+    'shared.AdvancedRateLimitMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -62,6 +63,18 @@ TEMPLATES = [
         },
     },
 ]
+
+GLOBAL_RATE_LIMIT = {'rate': 100, 'period': 60}
+RATE_LIMITS = {
+    '/api/v1/auth/login/': {'rate': 5, 'period': 60},
+    '/api/v1/auth/register/': {'rate': 3, 'period': 3600},
+    '/api/v1/auth/verify-email/': {'rate': 3, 'period': 3600},
+    '/api/v1/auth/2fa/verify/': {'rate': 3, 'period': 60},
+    '/api/v1/auth/password/reset/': {'rate': 2, 'period': 3600},
+    '/api/v1/auth/password/reset/confirm/': {'rate': 3, 'period': 60},
+    '/api/v1/auth/token/refresh/': {'rate': 10, 'period': 60},
+    '/api/v1/auth/social/google/callback/': {'rate': 5, 'period': 300},
+}
 
 WSGI_APPLICATION = 'core.wsgi.application'
 ASGI_APPLICATION = 'core.asgi.application'
