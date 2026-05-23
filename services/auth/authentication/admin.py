@@ -7,7 +7,7 @@ from .models import User, RefreshTokenBlacklist
 
 
 class CustomUserCreationForm(UserCreationForm):
-    class Meta:
+    class Meta(UserCreationForm.Meta):
         model = User
         fields = ('email', 'role')
 
@@ -15,7 +15,7 @@ class CustomUserCreationForm(UserCreationForm):
 class CustomUserChangeForm(UserChangeForm):
     class Meta:
         model = User
-        fields = ('email', 'role')
+        fields = '__all__'
 
 
 @admin.register(User)
@@ -23,24 +23,37 @@ class CustomUserAdmin(BaseUserAdmin):
     form = CustomUserChangeForm
     add_form = CustomUserCreationForm
 
-    list_display = ('email', 'first_name', 'last_name', 'role', 'is_active', 'is_verified', 'is_staff')
-    list_filter = ('role', 'is_active', 'is_verified', 'is_staff', 'is_superuser')
+    list_display = (
+        'email', 'first_name', 'last_name', 'role',
+        'is_active', 'is_verified', 'is_staff', 'is_2fa_enabled'
+    )
+    list_filter = (
+        'role', 'is_active', 'is_verified',
+        'is_staff', 'is_superuser', 'is_2fa_enabled'
+    )
     search_fields = ('email', 'first_name', 'last_name', 'id')
     ordering = ('-created_at',)
 
     fieldsets = (
         (_('Credentials'), {'fields': ('email', 'password')}),
-        (_('Personal info'), {'fields': ('first_name', 'last_name', 'role')}),
+        (_('Personal info'), {
+            'fields': ('first_name', 'last_name', 'role', 'language')
+        }),
+        (_('Security & 2FA'), {
+            'fields': ('is_2fa_enabled', 'totp_secret')
+        }),
         (_('Permissions'), {
             'fields': ('is_active', 'is_verified', 'is_staff', 'is_superuser', 'groups', 'user_permissions'),
         }),
-        (_('Important dates'), {'fields': ('last_login', 'last_login_ip', 'created_at', 'updated_at')}),
+        (_('Important dates & Logs'), {
+            'fields': ('last_login', 'last_login_ip', 'created_at', 'updated_at')
+        }),
     )
 
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'password', 'role'),
+            'fields': ('email', 'role'),
         }),
     )
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-22 16:42+0300\n"
+"POT-Creation-Date: 2026-05-23 17:29+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,20 +21,26 @@ msgstr ""
 "100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || "
 "(n % 100 >=11 && n % 100 <=14 )) ? 2: 3);\n"
 
-#: .\authentication\admin.py:32
+#: .\authentication\admin.py:38
 msgid "Credentials"
 msgstr "Облікові дані"
 
-#: .\authentication\admin.py:33
+#: .\authentication\admin.py:39
 msgid "Personal info"
 msgstr "Особиста інформація"
 
-#: .\authentication\admin.py:34
+#: .\authentication\admin.py:42
+msgid "Security & 2FA"
+msgstr "Безпека та двофакторна автентифікація"
+
+#: .\authentication\admin.py:45
 msgid "Permissions"
 msgstr "Права доступу"
 
-#: .\authentication\admin.py:37
-msgid "Important dates"
+#: .\authentication\admin.py:48
+#, fuzzy
+#| msgid "Important dates"
+msgid "Important dates & Logs"
 msgstr "Важливі дати"
 
 #: .\authentication\apps.py:8
@@ -130,8 +136,8 @@ msgid ""
 "Designates whether this user should be treated as active. Unselect this "
 "instead of deleting accounts."
 msgstr ""
-"Вказує, чи слід вважати цього користувача активним. Зніміть цю позначку замість "
-"видалення акаунту."
+"Вказує, чи слід вважати цього користувача активним. Зніміть цю позначку "
+"замість видалення акаунту."
 
 #: .\authentication\models.py:63
 msgid "staff status"
@@ -250,7 +256,7 @@ msgid "Password was changed. Please log in again."
 msgstr "Пароль було змінено. Будь ласка, увійдіть знову."
 
 #: .\authentication\serializers.py:124
-#: .\authentication\services\auth_service.py:134
+#: .\authentication\services\auth_service.py:143
 #: .\authentication\services\password_service.py:49
 msgid "User not found."
 msgstr "Користувача не знайдено."
@@ -259,33 +265,34 @@ msgstr "Користувача не знайдено."
 msgid "Pre-auth token is required."
 msgstr "Pre-auth токен є обов'язковим."
 
-#: .\authentication\services\auth_service.py:20
+#: .\authentication\services\auth_service.py:21
 #: .\authentication\services\password_service.py:39
 msgid "The token is invalid or has expired."
 msgstr "Токен недійсний або його термін дії минув."
 
-#: .\authentication\services\auth_service.py:98
-#: .\authentication\services\auth_service.py:101
+#: .\authentication\services\auth_service.py:107
+#: .\authentication\services\auth_service.py:110
+#: .\authentication\tests\test_translations.py:17
 msgid "Incorrect email address or password."
 msgstr "Неправильна email адреса або пароль."
 
-#: .\authentication\services\auth_service.py:104
+#: .\authentication\services\auth_service.py:113
 msgid "Please confirm your email address before logging in."
 msgstr "Будь ласка, підтвердіть вашу email адресу перед входом."
 
-#: .\authentication\services\auth_service.py:107
+#: .\authentication\services\auth_service.py:116
 msgid "Your account has been deactivated."
 msgstr "Ваш акаунт деактивовано."
 
-#: .\authentication\services\auth_service.py:137
+#: .\authentication\services\auth_service.py:146
 msgid "Invalid 2FA code."
 msgstr "Недійсний код 2FA."
 
-#: .\authentication\services\auth_service.py:158
+#: .\authentication\services\auth_service.py:166
 msgid "The token has already been blocked."
 msgstr "Токен вже заблоковано."
 
-#: .\authentication\services\auth_service.py:170
+#: .\authentication\services\auth_service.py:178
 msgid "Invalid or expired refresh token."
 msgstr "Недійсний або прострочений refresh токен."
 
@@ -321,8 +328,7 @@ msgstr "Вітаємо у Tastify! 🍔"
 msgid ""
 "To complete your registration and activate your account, click the button "
 "below:"
-msgstr ""
-"Щоб завершити реєстрацію та активувати акаунт, натисніть кнопку нижче:"
+msgstr "Щоб завершити реєстрацію та активувати акаунт, натисніть кнопку нижче:"
 
 #: .\authentication\services\email_service.py:61
 msgid "Confirm Email"
@@ -389,7 +395,9 @@ msgstr "Користувач деактивований або не знайде
 
 #: .\authentication\views\auth.py:38
 msgid "User registered successfully. Please check your email for verification."
-msgstr "Користувача успішно зареєстровано. Будь ласка, перевірте email для підтвердження."
+msgstr ""
+"Користувача успішно зареєстровано. Будь ласка, перевірте email для "
+"підтвердження."
 
 #: .\authentication\views\auth.py:72
 msgid "Your email address has been successfully verified."
@@ -403,7 +411,8 @@ msgstr "Будь ласка, введіть ваш код 2FA."
 msgid ""
 "If an account with this email exists, a password reset link has been sent."
 msgstr ""
-"Якщо акаунт з таким email існує, посилання для скидання пароля було надіслано."
+"Якщо акаунт з таким email існує, посилання для скидання пароля було "
+"надіслано."
 
 #: .\authentication\views\password.py:56
 msgid "Your password has been successfully reset."
@@ -417,10 +426,10 @@ msgstr "Недійсний код 2FA. Перевірка не вдалася."
 msgid "Two-factor authentication enabled successfully."
 msgstr "Двофакторну автентифікацію успішно увімкнено."
 
-#: .\core\settings\base.py:130
+#: .\core\settings\base.py:143
 msgid "English"
 msgstr "Англійська"
 
-#: .\core\settings\base.py:131
+#: .\core\settings\base.py:144
 msgid "Ukrainian"
 msgstr "Українська"
