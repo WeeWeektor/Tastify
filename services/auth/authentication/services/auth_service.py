@@ -11,7 +11,6 @@ from rest_framework.exceptions import ValidationError
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from authentication.models import RefreshTokenBlacklist
-from authentication.tasks import send_verification_email_task
 from .token_service import email_verification_service, token_blacklist_service, pre_auth_service
 from .two_factor_service import TwoFactorService
 
@@ -43,6 +42,7 @@ class AuthenticationService:
 
         email_verification_service.store(value=str(user.id), key=verification_token)
 
+        from authentication.tasks import send_verification_email_task
         send_verification_email_task.delay(user.email, verification_token, current_language)
 
         return user

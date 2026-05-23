@@ -99,7 +99,10 @@ class CustomTokenRefreshSerializer(TokenRefreshSerializer):
     """
 
     def validate(self, attrs):
-        data = super().validate(attrs)
+        try:
+            data = super().validate(attrs)
+        except User.DoesNotExist:
+            raise InvalidToken(_("User not found."))
 
         refresh_token_str = attrs['refresh']
         refresh = RefreshToken(refresh_token_str)
@@ -114,14 +117,11 @@ class CustomTokenRefreshSerializer(TokenRefreshSerializer):
         if RefreshTokenBlacklist.objects.filter(jti=jti).exists():
             raise InvalidToken(_("This token has been blacklisted."))
 
-        try:
-            user = User.objects.get(id=user_id)
-            token_issued_at = datetime.fromtimestamp(iat_timestamp, tz=timezone.utc)
+        user = User.objects.get(id=user_id)
+        token_issued_at = datetime.fromtimestamp(iat_timestamp, tz=timezone.utc)
 
-            if user.last_login and token_issued_at < user.last_login:
-                raise InvalidToken(_("Password was changed. Please log in again."))
-        except User.DoesNotExist:
-            raise InvalidToken(_("User not found."))
+        if user.last_login and token_issued_at < user.last_login:
+            raise InvalidToken(_("Password was changed. Please log in again."))
 
         return data
 

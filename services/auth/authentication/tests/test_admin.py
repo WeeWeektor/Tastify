@@ -7,7 +7,6 @@ from authentication.admin import (
     RefreshTokenBlacklistAdmin,
     CustomUserCreationForm
 )
-# Імпортуємо твої моделі та адмін-класи
 from authentication.models import User, RefreshTokenBlacklist
 
 
