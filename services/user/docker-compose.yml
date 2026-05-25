@@ -1,0 +1,27 @@
+services:
+  user_service:
+    build:
+      context: ../../
+      dockerfile: services/user/Dockerfile
+    container_name: user_service
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/app
+      - ../../shared:/opt/shared
+    ports:
+      - "8002:8000"
+    env_file:
+      - ../../.env
+    environment:
+      - PYTHONPATH=/app:/opt
+      - DATABASE_URL=postgres://${USER_DB_USER}:${USER_DB_PASSWORD}@postgres_user:5432/${USER_DB_NAME}
+      - REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379/1
+    depends_on:
+      postgres_user:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - tastify_network
