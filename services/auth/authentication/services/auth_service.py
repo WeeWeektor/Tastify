@@ -159,20 +159,20 @@ class AuthenticationService:
             jti = token.payload.get('jti')
             user_id = token.payload.get('user_id')
             exp_timestamp = token.payload.get('exp')
-
-            expires_at = datetime.fromtimestamp(exp_timestamp, tz=timezone.utc)
-
-            if token_blacklist_service.get_value(key=jti):
-                raise ValidationError({"detail": _("The token has already been blocked.")})
-
-            token_blacklist_service.store(value=str(user_id), key=jti)
-
-            if not RefreshTokenBlacklist.objects.filter(jti=jti).exists():
-                RefreshTokenBlacklist.objects.create(
-                    jti=jti,
-                    user_id=user_id,
-                    expires_at=expires_at
-                )
         except Exception as e:
             logger.error(f"Logout failed for token {refresh_token_str[-10:]}: {str(e)}")
             raise ValidationError({"detail": _("Invalid or expired refresh token.")})
+
+        expires_at = datetime.fromtimestamp(exp_timestamp, tz=timezone.utc)
+
+        if token_blacklist_service.get_value(key=jti):
+            raise ValidationError({"detail": _("The token has already been blocked.")})
+
+        token_blacklist_service.store(value=str(user_id), key=jti)
+
+        if not RefreshTokenBlacklist.objects.filter(jti=jti).exists():
+            RefreshTokenBlacklist.objects.create(
+                jti=jti,
+                user_id=user_id,
+                expires_at=expires_at
+            )
