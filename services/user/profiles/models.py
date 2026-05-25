@@ -38,6 +38,9 @@ class CustomerProfile(models.Model):
         verbose_name = _('Customer Profile')
         verbose_name_plural = _('Customer Profiles')
         ordering = ['-created_at']
+
+        default_permissions = ()
+
         indexes = [
             models.Index(fields=['phone'], name='idx_customer_phone'),
             models.Index(fields=['notification_telegram'], name='idx_customer_telegram'),
