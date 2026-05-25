@@ -1,0 +1,435 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-23 17:29+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: uk\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != "
+"11 ? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % "
+"100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || "
+"(n % 100 >=11 && n % 100 <=14 )) ? 2: 3);\n"
+
+#: .\authentication\admin.py:38
+msgid "Credentials"
+msgstr "Облікові дані"
+
+#: .\authentication\admin.py:39
+msgid "Personal info"
+msgstr "Особиста інформація"
+
+#: .\authentication\admin.py:42
+msgid "Security & 2FA"
+msgstr "Безпека та двофакторна автентифікація"
+
+#: .\authentication\admin.py:45
+msgid "Permissions"
+msgstr "Права доступу"
+
+#: .\authentication\admin.py:48
+#, fuzzy
+#| msgid "Important dates"
+msgid "Important dates & Logs"
+msgstr "Важливі дати"
+
+#: .\authentication\apps.py:8
+msgid "Authentication & Authorization"
+msgstr "Автентифікація та Авторизація"
+
+#: .\authentication\mixins.py:14
+msgid "The password must be at least 8 characters long."
+msgstr "Пароль має містити щонайменше 8 символів."
+
+#: .\authentication\mixins.py:16 .\authentication\serializers.py:61
+msgid "Password is required."
+msgstr "Пароль є обов'язковим."
+
+#: .\authentication\mixins.py:17 .\authentication\serializers.py:62
+msgid "Password cannot be blank."
+msgstr "Пароль не може бути порожнім."
+
+#: .\authentication\mixins.py:18
+msgid "Ensure this field has at least 8 characters."
+msgstr "Переконайтеся, що це поле містить щонайменше 8 символів."
+
+#: .\authentication\mixins.py:26
+msgid "Password confirmation is required."
+msgstr "Підтвердження пароля є обов'язковим."
+
+#: .\authentication\mixins.py:27
+msgid "Password confirmation cannot be blank."
+msgstr "Підтвердження пароля не може бути порожнім."
+
+#: .\authentication\mixins.py:34
+msgid "Passwords do not match."
+msgstr "Паролі не співпадають."
+
+#: .\authentication\models.py:14
+msgid "Email must be set"
+msgstr "Email має бути вказано"
+
+#: .\authentication\models.py:28
+msgid "Superuser must have is_staff=True."
+msgstr "Суперкористувач повинен мати is_staff=True."
+
+#: .\authentication\models.py:30
+msgid "Superuser must have is_superuser=True."
+msgstr "Суперкористувач повинен мати is_superuser=True."
+
+#: .\authentication\models.py:36
+msgid "Customer"
+msgstr "Клієнт"
+
+#: .\authentication\models.py:37
+msgid "Restaurant Owner"
+msgstr "Власник ресторану"
+
+#: .\authentication\models.py:38
+msgid "Courier"
+msgstr "Кур'єр"
+
+#: .\authentication\models.py:39
+msgid "Admin"
+msgstr "Адміністратор"
+
+#: .\authentication\models.py:45
+msgid "email address"
+msgstr "email адреса"
+
+#: .\authentication\models.py:46
+msgid "role"
+msgstr "роль"
+
+#: .\authentication\models.py:48
+msgid "first name"
+msgstr "ім'я"
+
+#: .\authentication\models.py:49
+msgid "last name"
+msgstr "прізвище"
+
+#: .\authentication\models.py:52
+msgid "verified"
+msgstr "підтверджено"
+
+#: .\authentication\models.py:54
+msgid "Designates whether the user has verified their email address."
+msgstr "Вказує, чи підтвердив користувач свою email адресу."
+
+#: .\authentication\models.py:57
+msgid "active"
+msgstr "активний"
+
+#: .\authentication\models.py:59
+msgid ""
+"Designates whether this user should be treated as active. Unselect this "
+"instead of deleting accounts."
+msgstr ""
+"Вказує, чи слід вважати цього користувача активним. Зніміть цю позначку "
+"замість видалення акаунту."
+
+#: .\authentication\models.py:63
+msgid "staff status"
+msgstr "статус персоналу"
+
+#: .\authentication\models.py:65
+msgid "Designates whether the user can log into this admin site."
+msgstr "Вказує, чи може користувач входити на цей сайт адміністратора."
+
+#: .\authentication\models.py:68
+msgid "date joined"
+msgstr "дата реєстрації"
+
+#: .\authentication\models.py:69
+msgid "updated at"
+msgstr "оновлено"
+
+#: .\authentication\models.py:72
+msgid "last login IP"
+msgstr "IP останнього входу"
+
+#: .\authentication\models.py:81
+msgid "language"
+msgstr "мова"
+
+#: .\authentication\models.py:93
+msgid "user"
+msgstr "користувач"
+
+#: .\authentication\models.py:94
+msgid "users"
+msgstr "користувачі"
+
+#: .\authentication\models.py:101
+msgid "Can suspend users from the platform"
+msgstr "Може блокувати користувачів на платформі"
+
+#: .\authentication\models.py:113
+msgid "refresh token"
+msgstr "refresh токен"
+
+#: .\authentication\models.py:114
+msgid "user id"
+msgstr "id користувача"
+
+#: .\authentication\models.py:116
+msgid "blacklisted at"
+msgstr "додано в чорний список"
+
+#: .\authentication\models.py:117
+msgid "expires at"
+msgstr "діє до"
+
+#: .\authentication\models.py:122
+msgid "blacklisted refresh token"
+msgstr "заблокований refresh токен"
+
+#: .\authentication\models.py:123
+msgid "blacklisted refresh tokens"
+msgstr "заблоковані refresh токени"
+
+#: .\authentication\serializers.py:18
+msgid "Email is required."
+msgstr "Email є обов'язковим."
+
+#: .\authentication\serializers.py:19
+msgid "Enter a valid email address."
+msgstr "Введіть дійсну email адресу."
+
+#: .\authentication\serializers.py:20
+msgid "Email cannot be blank."
+msgstr "Email не може бути порожнім."
+
+#: .\authentication\serializers.py:24
+msgid "Code is required."
+msgstr "Код є обов'язковим."
+
+#: .\authentication\serializers.py:25 .\authentication\serializers.py:26
+msgid "Code must be exactly 6 digits."
+msgstr "Код має складатися рівно з 6 цифр."
+
+#: .\authentication\serializers.py:36
+msgid "A user with that email already exists."
+msgstr "Користувач з таким email вже існує."
+
+#: .\authentication\serializers.py:70
+msgid "Refresh token, which needs to be blocked."
+msgstr "Refresh токен, який потрібно заблокувати."
+
+#: .\authentication\serializers.py:72
+msgid "Refresh token is required."
+msgstr "Refresh токен є обов'язковим."
+
+#: .\authentication\serializers.py:73
+msgid "Refresh token cannot be blank."
+msgstr "Refresh токен не може бути порожнім."
+
+#: .\authentication\serializers.py:81
+msgid "The email address of the user who has forgotten their password."
+msgstr "Email адреса користувача, який забув пароль."
+
+#: .\authentication\serializers.py:90 .\authentication\views\auth.py:68
+msgid "Token is required."
+msgstr "Токен є обов'язковим."
+
+#: .\authentication\serializers.py:91
+msgid "Token cannot be blank."
+msgstr "Токен не може бути порожнім."
+
+#: .\authentication\serializers.py:112 .\authentication\serializers.py:115
+msgid "This token has been blacklisted."
+msgstr "Цей токен було заблоковано."
+
+#: .\authentication\serializers.py:122
+msgid "Password was changed. Please log in again."
+msgstr "Пароль було змінено. Будь ласка, увійдіть знову."
+
+#: .\authentication\serializers.py:124
+#: .\authentication\services\auth_service.py:143
+#: .\authentication\services\password_service.py:49
+msgid "User not found."
+msgstr "Користувача не знайдено."
+
+#: .\authentication\serializers.py:142
+msgid "Pre-auth token is required."
+msgstr "Pre-auth токен є обов'язковим."
+
+#: .\authentication\services\auth_service.py:21
+#: .\authentication\services\password_service.py:39
+msgid "The token is invalid or has expired."
+msgstr "Токен недійсний або його термін дії минув."
+
+#: .\authentication\services\auth_service.py:107
+#: .\authentication\services\auth_service.py:110
+#: .\authentication\tests\test_translations.py:17
+msgid "Incorrect email address or password."
+msgstr "Неправильна email адреса або пароль."
+
+#: .\authentication\services\auth_service.py:113
+msgid "Please confirm your email address before logging in."
+msgstr "Будь ласка, підтвердіть вашу email адресу перед входом."
+
+#: .\authentication\services\auth_service.py:116
+msgid "Your account has been deactivated."
+msgstr "Ваш акаунт деактивовано."
+
+#: .\authentication\services\auth_service.py:146
+msgid "Invalid 2FA code."
+msgstr "Недійсний код 2FA."
+
+#: .\authentication\services\auth_service.py:166
+msgid "The token has already been blocked."
+msgstr "Токен вже заблоковано."
+
+#: .\authentication\services\auth_service.py:178
+msgid "Invalid or expired refresh token."
+msgstr "Недійсний або прострочений refresh токен."
+
+#: .\authentication\services\email_service.py:45
+msgid "Registration Confirmation at Tastify"
+msgstr "Підтвердження реєстрації у Tastify"
+
+#: .\authentication\services\email_service.py:48
+#, python-brace-format
+msgid ""
+"Welcome to Tastify!\n"
+"\n"
+"To complete your registration and activate your account, please follow the "
+"link:\n"
+"{link}\n"
+"\n"
+"This link is valid for 24 hours.\n"
+"If you did not register on our site, please ignore this email."
+msgstr ""
+"Вітаємо у Tastify!\n"
+"\n"
+"Щоб завершити реєстрацію та активувати акаунт, перейдіть за посиланням:\n"
+"{link}\n"
+"\n"
+"Це посилання дійсне 24 години.\n"
+"Якщо ви не реєструвалися на нашому сайті, просто проігноруйте цей лист."
+
+#: .\authentication\services\email_service.py:58
+msgid "Welcome to Tastify! 🍔"
+msgstr "Вітаємо у Tastify! 🍔"
+
+#: .\authentication\services\email_service.py:59
+msgid ""
+"To complete your registration and activate your account, click the button "
+"below:"
+msgstr "Щоб завершити реєстрацію та активувати акаунт, натисніть кнопку нижче:"
+
+#: .\authentication\services\email_service.py:61
+msgid "Confirm Email"
+msgstr "Підтвердити Email"
+
+#: .\authentication\services\email_service.py:63
+msgid "This link is valid for 24 hours."
+msgstr "Це посилання дійсне 24 години."
+
+#: .\authentication\services\email_service.py:85
+msgid "Password Reset at Tastify"
+msgstr "Скидання пароля у Tastify"
+
+#: .\authentication\services\email_service.py:88
+#, python-brace-format
+msgid ""
+"You received this email because a password reset request was made for your "
+"Tastify account.\n"
+"\n"
+"To set a new password, please follow the link:\n"
+"{link}\n"
+"\n"
+"This link is valid for 1 hour.\n"
+"If you did not request this, please ignore this email; your password will "
+"remain unchanged."
+msgstr ""
+"Ви отримали цей лист, оскільки було зроблено запит на скидання пароля для "
+"вашого акаунту Tastify.\n"
+"\n"
+"Щоб встановити новий пароль, перейдіть за посиланням:\n"
+"{link}\n"
+"\n"
+"Це посилання дійсне 1 годину.\n"
+"Якщо ви не робили цей запит, просто проігноруйте цей лист; ваш пароль "
+"залишиться без змін."
+
+#: .\authentication\services\email_service.py:98
+msgid "Password Reset 🍔"
+msgstr "Скидання пароля 🍔"
+
+#: .\authentication\services\email_service.py:99
+msgid "To set a new password, click the button below:"
+msgstr "Щоб встановити новий пароль, натисніть кнопку нижче:"
+
+#: .\authentication\services\email_service.py:101
+msgid "Reset Password"
+msgstr "Скинути пароль"
+
+#: .\authentication\services\email_service.py:103
+msgid "This link is valid for 1 hour."
+msgstr "Це посилання дійсне 1 годину."
+
+#: .\authentication\services\social_service.py:41
+msgid "Google authentication failed:"
+msgstr "Помилка автентифікації Google:"
+
+#: .\authentication\services\social_service.py:43
+msgid "An error occurred during authentication."
+msgstr "Під час автентифікації сталася помилка."
+
+#: .\authentication\services\social_service.py:46
+msgid "User is disabled or not found."
+msgstr "Користувач деактивований або не знайдений."
+
+#: .\authentication\views\auth.py:38
+msgid "User registered successfully. Please check your email for verification."
+msgstr ""
+"Користувача успішно зареєстровано. Будь ласка, перевірте email для "
+"підтвердження."
+
+#: .\authentication\views\auth.py:72
+msgid "Your email address has been successfully verified."
+msgstr "Вашу email адресу успішно підтверджено."
+
+#: .\authentication\views\auth.py:107
+msgid "Please enter your 2FA code."
+msgstr "Будь ласка, введіть ваш код 2FA."
+
+#: .\authentication\views\password.py:28
+msgid ""
+"If an account with this email exists, a password reset link has been sent."
+msgstr ""
+"Якщо акаунт з таким email існує, посилання для скидання пароля було "
+"надіслано."
+
+#: .\authentication\views\password.py:56
+msgid "Your password has been successfully reset."
+msgstr "Ваш пароль успішно скинуто."
+
+#: .\authentication\views\two_factor.py:57
+msgid "Invalid 2FA code. Verification failed."
+msgstr "Недійсний код 2FA. Перевірка не вдалася."
+
+#: .\authentication\views\two_factor.py:60
+msgid "Two-factor authentication enabled successfully."
+msgstr "Двофакторну автентифікацію успішно увімкнено."
+
+#: .\core\settings\base.py:143
+msgid "English"
+msgstr "Англійська"
+
+#: .\core\settings\base.py:144
+msgid "Ukrainian"
+msgstr "Українська"

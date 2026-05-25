@@ -6,6 +6,9 @@
 *.env
 !.env.example
 
+# Django Translations
+*.mo
+
 # 2. Python & Django
 __pycache__/
 *.py[cod]
