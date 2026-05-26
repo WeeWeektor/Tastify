@@ -35,6 +35,8 @@ class CustomerProfile(models.Model):
     created_at = models.DateTimeField(_('Created At'), auto_now_add=True)
     updated_at = models.DateTimeField(_('Updated At'), auto_now=True)
 
+    objects = models.Manager()
+
     class Meta:
         db_table = 'customer_profiles'
         verbose_name = _('Customer Profile')

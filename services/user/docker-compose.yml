@@ -25,3 +25,25 @@ services:
         condition: service_healthy
     networks:
       - tastify_network
+
+  user_consumer:
+    build:
+      context: ../../
+      dockerfile: services/user/Dockerfile
+    container_name: user_consumer
+    command: python manage.py run_consumer
+    volumes:
+      - .:/app
+      - ../../shared:/opt/shared
+    env_file:
+      - ../../.env
+    environment:
+      - PYTHONPATH=/app:/opt
+      - DATABASE_URL=postgres://${USER_DB_USER}:${USER_DB_PASSWORD}@postgres_user:5432/${USER_DB_NAME}
+    depends_on:
+      postgres_user:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    networks:
+      - tastify_network
