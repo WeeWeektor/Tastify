@@ -22,18 +22,17 @@ def mark_social_user_verified(backend, user, response, *args, **kwargs):
         if fields_to_update:
             user.save(update_fields=fields_to_update)
 
-        # TODO
-        # google_avatar_url = response.get('picture')
-        #
-        # # Генеруємо подію для іншого сервісу.
-        # # Оскільки в транзакції, найкраще викликати асинхронну таску Celery,
-        # # яка відправить подію в Kafka після успішного коміту в БД.
-        # from authentication.tasks import send_user_created_event
-        #
-        # # Передаємо id, роль та аватарку, щоб сервіс профілів знав, який профіль створити
-        # send_user_created_event.delay(
-        #     user_id=str(user.id),
-        #     email=user.email,
-        #     role=user.role,
-        #     avatar_url=google_avatar_url
-        # )
+        first_name = response.get('given_name', '')
+        last_name = response.get('family_name', '')
+        google_avatar_url = response.get('picture', '')
+
+        from authentication.tasks import send_user_created_event
+
+        send_user_created_event.delay(
+            user_id=str(user.id),
+            email=user.email,
+            role=user.role,
+            first_name=first_name,
+            last_name=last_name,
+            avatar_url=google_avatar_url
+        )

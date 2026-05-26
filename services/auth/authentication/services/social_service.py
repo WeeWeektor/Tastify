@@ -1,3 +1,5 @@
+from typing import cast
+
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
@@ -12,7 +14,9 @@ User = get_user_model()
 class SocialAuthService:
     @classmethod
     def _get_backend(cls, request):
-        strategy = load_strategy(request)
+        django_request = getattr(request, '_request', request)
+
+        strategy = load_strategy(django_request)
         backend = load_backend(
             strategy=strategy,
             name='google-oauth2',
@@ -45,7 +49,8 @@ class SocialAuthService:
         if not user or not user.is_active:
             raise AuthenticationFailed(_("User is disabled or not found."))
 
-        refresh = RefreshToken.for_user(user)
+        from authentication.serializers import CustomTokenObtainPairSerializer
+        refresh: RefreshToken = cast(RefreshToken, CustomTokenObtainPairSerializer.get_token(user))
 
         return {
             'refresh': str(refresh),

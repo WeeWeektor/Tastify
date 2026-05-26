@@ -24,20 +24,19 @@ class CustomUserAdmin(BaseUserAdmin):
     add_form = CustomUserCreationForm
 
     list_display = (
-        'email', 'first_name', 'last_name', 'role',
-        'is_active', 'is_verified', 'is_staff', 'is_2fa_enabled'
+        'email', 'role', 'is_active', 'is_verified', 'is_staff', 'is_2fa_enabled'
     )
     list_filter = (
         'role', 'is_active', 'is_verified',
         'is_staff', 'is_superuser', 'is_2fa_enabled'
     )
-    search_fields = ('email', 'first_name', 'last_name', 'id')
+    search_fields = ('email', 'id')
     ordering = ('-created_at',)
 
     fieldsets = (
         (_('Credentials'), {'fields': ('email', 'password')}),
         (_('Personal info'), {
-            'fields': ('first_name', 'last_name', 'role', 'language')
+            'fields': ('role', 'language')
         }),
         (_('Security & 2FA'), {
             'fields': ('is_2fa_enabled', 'totp_secret')

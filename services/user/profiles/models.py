@@ -13,6 +13,8 @@ class CustomerProfile(models.Model):
         help_text=_("Unique identifier from the Auth Service.")
     )
     display_name = models.CharField(_('Display Name'), max_length=100)
+    first_name = models.CharField(_('first name'), max_length=150, blank=True)
+    last_name = models.CharField(_('last name'), max_length=150, blank=True)
     phone = models.CharField(
         _('Phone Number'),
         max_length=20,

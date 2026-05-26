@@ -1,6 +1,7 @@
 import logging
 import uuid
 from datetime import datetime, timezone
+from typing import cast
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import update_last_login
@@ -11,6 +12,7 @@ from rest_framework.exceptions import ValidationError
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from authentication.models import RefreshTokenBlacklist
+from authentication.tasks import send_user_created_event
 from .token_service import email_verification_service, token_blacklist_service, pre_auth_service
 from .two_factor_service import TwoFactorService
 
@@ -64,6 +66,16 @@ class AuthenticationService:
                 user.save(update_fields=['is_verified'])
 
                 email_verification_service.delete(key=token)
+
+                send_user_created_event.delay(
+                    user_id=str(user.id),
+                    email=user.email,
+                    role=user.role,
+                    first_name="",
+                    last_name="",
+                    avatar_url=""
+                )
+
             return True
         except User.DoesNotExist:
             raise ValidationError({"token": ERROR_MESSAGES_FOR_TOKEN})
@@ -80,14 +92,9 @@ class AuthenticationService:
 
         update_last_login(None, user)
 
-        refresh = RefreshToken.for_user(user)
+        from authentication.serializers import CustomTokenObtainPairSerializer
+        refresh = cast(RefreshToken, CustomTokenObtainPairSerializer.get_token(user))
         access = refresh.access_token
-
-        refresh['role'] = user.role
-        refresh['email'] = user.email
-
-        access['role'] = user.role
-        access['email'] = user.email
 
         return {
             "requires_2fa": False,
