@@ -22,26 +22,26 @@ services:
     networks:
       - tastify_network
 
-#  postgres_user:
-#    image: postgres:16
-#    container_name: tastify_postgres_user
-#    restart: unless-stopped
-#    environment:
-#      POSTGRES_DB: ${USER_DB_NAME}
-#      POSTGRES_USER: ${USER_DB_USER}
-#      POSTGRES_PASSWORD: ${USER_DB_PASSWORD}
-#    ports:
-#      - "5533:5432"
-#    volumes:
-#      - postgres_user_data:/var/lib/postgresql/data
-#    healthcheck:
-#      test: [ "CMD-SHELL", "pg_isready -U ${USER_DB_USER} -d ${USER_DB_NAME}" ]
-#      interval: 10s
-#      timeout: 5s
-#      retries: 5
-#    networks:
-#      - tastify_network
-#
+  postgres_user:
+    image: postgres:16
+    container_name: tastify_postgres_user
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${USER_DB_NAME}
+      POSTGRES_USER: ${USER_DB_USER}
+      POSTGRES_PASSWORD: ${USER_DB_PASSWORD}
+    ports:
+      - "5533:5432"
+    volumes:
+      - postgres_user_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${USER_DB_USER} -d ${USER_DB_NAME}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - tastify_network
+
 #  postgres_restaurant:
 #    image: postgres:16
 #    container_name: tastify_postgres_restaurant
@@ -233,57 +233,71 @@ services:
   # ─────────────────────────────────────────
   # ZOOKEEPER + KAFKA
   # ─────────────────────────────────────────
-#  zookeeper:
-#    image: confluentinc/cp-zookeeper:7.7.0
-#    container_name: tastify_zookeeper
-#    restart: unless-stopped
-#    environment:
-#      ZOOKEEPER_CLIENT_PORT: 2181
-#      ZOOKEEPER_TICK_TIME: 2000
-#      ZOOKEEPER_LOG4J_ROOT_LOGLEVEL: WARN
-#    ports:
-#      - "2181:2181"
-#    volumes:
-#      - zookeeper_data:/var/lib/zookeeper/data
-#      - zookeeper_logs:/var/lib/zookeeper/log
-#    healthcheck:
-#      test: [ "CMD-SHELL", "echo ruok | nc localhost 2181 | grep imok" ]
-#      interval: 10s
-#      timeout: 5s
-#      retries: 5
-#    networks:
-#      - tastify_network
-#
-#  kafka:
-#    image: confluentinc/cp-kafka:7.7.0
-#    container_name: tastify_kafka
-#    restart: unless-stopped
-#    depends_on:
-#      zookeeper:
-#        condition: service_healthy
-#    environment:
-#      KAFKA_BROKER_ID: 1
-#      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-#      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
-#      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
-#      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-#      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-#      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'false'
-#      KAFKA_LOG_RETENTION_HOURS: 168
-#      KAFKA_LOG4J_ROOT_LOGLEVEL: WARN
-#      KAFKA_TOOLS_LOG4J_LOGLEVEL: ERROR
-#    ports:
-#      - "29092:29092"
-#    volumes:
-#      - kafka_data:/var/lib/kafka/data
-#    healthcheck:
-#      test: [ "CMD-SHELL", "kafka-topics --bootstrap-server localhost:9092 --list" ]
-#      interval: 15s
-#      timeout: 10s
-#      retries: 10
-#      start_period: 30s
-#    networks:
-#      - tastify_network
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.7.0
+    container_name: tastify_zookeeper
+    restart: unless-stopped
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_LOG4J_ROOT_LOGLEVEL: WARN
+    ports:
+      - "2181:2181"
+    volumes:
+      - zookeeper_data:/var/lib/zookeeper/data
+      - zookeeper_logs:/var/lib/zookeeper/log
+    healthcheck:
+      test: ["CMD", "cub", "zk-ready", "localhost:2181", "10"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - tastify_network
+
+  kafka:
+    image: confluentinc/cp-kafka:7.7.0
+    container_name: tastify_kafka
+    restart: unless-stopped
+    depends_on:
+      zookeeper:
+        condition: service_healthy
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,PLAINTEXT_HOST://0.0.0.0:29092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'false'
+      KAFKA_LOG_RETENTION_HOURS: 168
+      KAFKA_LOG4J_ROOT_LOGLEVEL: WARN
+      KAFKA_TOOLS_LOG4J_LOGLEVEL: ERROR
+    ports:
+      - "29092:29092"
+    volumes:
+      - kafka_data:/var/lib/kafka/data
+    healthcheck:
+      test: [ "CMD-SHELL", "kafka-topics --bootstrap-server kafka:9092 --list" ]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 30s
+    networks:
+      - tastify_network
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: tastify_kafka_ui
+    ports:
+      - "8081:8080"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
+    depends_on:
+      - kafka
+    networks:
+      - tastify_network
 
   # ─────────────────────────────────────────
   # ELASTICSEARCH
@@ -321,26 +335,26 @@ services:
   # Веб-консоль: http://localhost:9001
   # API: http://localhost:9000
   # ─────────────────────────────────────────
-#  minio:
-#    image: minio/minio:latest
-#    container_name: tastify_minio
-#    restart: unless-stopped
-#    command: server /data --console-address ":9001"
-#    environment:
-#      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
-#      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
-#    ports:
-#      - "9000:9000"
-#      - "9001:9001"
-#    volumes:
-#      - minio_data:/data
-#    healthcheck:
-#      test: [ "CMD-SHELL", "curl -f http://localhost:9000/minio/health/live || exit 1" ]
-#      interval: 15s
-#      timeout: 5s
-#      retries: 5
-#    networks:
-#      - tastify_network
+  minio:
+    image: minio/minio:latest
+    container_name: tastify_minio
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:9000/minio/health/live || exit 1" ]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+    networks:
+      - tastify_network
 
   # ─────────────────────────────────────────
   # MLFLOW
@@ -373,7 +387,7 @@ services:
 # ─────────────────────────────────────────
 volumes:
   postgres_auth_data:
-#  postgres_user_data:
+  postgres_user_data:
 #  postgres_restaurant_data:
 #  postgres_order_data:
 #  postgres_delivery_data:
@@ -383,9 +397,9 @@ volumes:
 #  postgres_analytics_data:
 #  postgres_billing_data:
   redis_data:
-#  zookeeper_data:
-#  zookeeper_logs:
-#  kafka_data:
+  zookeeper_data:
+  zookeeper_logs:
+  kafka_data:
 #  elasticsearch_data:
-#  minio_data:
+  minio_data:
 #  mlflow_data:

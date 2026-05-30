@@ -5,8 +5,9 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from rest_framework_simplejwt.exceptions import InvalidToken
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.serializers import TokenRefreshSerializer
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 
 from authentication.mixins import PasswordValidationAndConfirmationMixin
 from authentication.models import RefreshTokenBlacklist
@@ -123,7 +124,29 @@ class CustomTokenRefreshSerializer(TokenRefreshSerializer):
         if user.last_login and token_issued_at < user.last_login:
             raise InvalidToken(_("Password was changed. Please log in again."))
 
+        new_access_token = AccessToken(data['access'])
+        new_access_token['email'] = user.email
+        new_access_token['role'] = user.role
+
+        data['access'] = str(new_access_token)
+
         return data
+
+
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    """
+    Кастомний серіалізатор для генерації JWT токенів.
+    Додає додаткові дані (claims) у пейлоад токена.
+    """
+
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+
+        token['email'] = user.email
+        token['role'] = user.role
+
+        return token
 
 
 class Code2FASerializer(serializers.Serializer):

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 KAFKA_CONTAINER="tastify_kafka"
-BOOTSTRAP="localhost:9092"
+BOOTSTRAP="kafka:9092"
 
 echo "Чекаємо поки Kafka буде готова..."
 sleep 5
@@ -43,6 +43,9 @@ create_topic "review.created"
 create_topic "subscription.activated"
 create_topic "subscription.expired"
 create_topic "commission.created"
+
+# Users flow
+create_topic "user.created"
 
 echo ""
 echo "Список створених топіків:"
