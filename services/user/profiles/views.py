@@ -4,6 +4,7 @@ from rest_framework import generics, permissions, status
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 from rest_framework.response import Response
 
+from .decorators import cache_user_profile, invalidate_profile_cache
 from .models import CustomerProfile
 from .serializers import CustomerProfileSerializer
 from .services import CustomerProfileService
@@ -46,6 +47,14 @@ class CustomerProfileView(generics.RetrieveUpdateAPIView):
         """
         return get_object_or_404(CustomerProfile, user_id=self.request.user.id)
 
+    @cache_user_profile()
+    def retrieve(self, request, *args, **kwargs):
+        """
+            Перевизначений стандартний метод GET, щоб викликати декоратор кешування.
+            Уся логіка прихована в декораторі.
+        """
+        return super().retrieve(request, *args, **kwargs)
+
     def update(self, request, *args, **kwargs):
         profile = self.get_object()
 
@@ -61,4 +70,7 @@ class CustomerProfileView(generics.RetrieveUpdateAPIView):
         )
 
         result_serializer = self.get_serializer(updated_profile)
+
+        invalidate_profile_cache(str(request.user.id))
+
         return Response(result_serializer.data, status=status.HTTP_200_OK)

@@ -38,7 +38,6 @@ MIDDLEWARE = [
     'shared.AdvancedRateLimitMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'shared.JWTAuthMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
@@ -114,7 +113,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'shared.MicroserviceJWTAuthentication',
+        'shared.auth_backend.MicroserviceJWTAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
@@ -128,5 +127,4 @@ SPECTACULAR_SETTINGS = {
     'DESCRIPTION': 'API for user profiles, addresses, favorites, and order history',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
-    'SECURITY': [{'jwtAuth': []}],
 }

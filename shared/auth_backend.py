@@ -45,7 +45,7 @@ class MicroserviceJWTAuthentication(BaseAuthentication):
         try:
             payload = jwt.decode(
                 token,
-                settings.JWT_SECRET_KEY,
+                settings.SECRET_KEY,
                 algorithms=['HS256']
             )
 
@@ -65,7 +65,7 @@ class MicroserviceJWTAuthentication(BaseAuthentication):
 
 
 class MicroserviceJWTAuthenticationScheme(OpenApiAuthenticationExtension):
-    target_class = 'shared.MicroserviceJWTAuthentication'
+    target_class = 'shared.auth_backend.MicroserviceJWTAuthentication'
     name = 'jwtAuth'
 
     def get_security_definition(self, auto_schema):

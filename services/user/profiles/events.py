@@ -17,7 +17,7 @@ def handle_user_events(payload: dict):
     if event_type == 'user_registered':
         role = event_data.get('role')
 
-        if role == 'consumer':
+        if role == 'customer':
             CustomerProfileService.create_profile_from_event(event_data)
         else:
             logger.info(f"Ignoring user_registered event for role: {role}")
