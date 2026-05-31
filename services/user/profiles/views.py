@@ -1,13 +1,21 @@
+from django.conf import settings
 from django.shortcuts import get_object_or_404
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import generics, permissions, status
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 from rest_framework.response import Response
 
-from .decorators import cache_user_profile, invalidate_profile_cache
+from shared import BaseRedisService
+from shared.decorators import cache_user_data, invalidate_user_data_cache
 from .models import CustomerProfile
 from .serializers import CustomerProfileSerializer
 from .services import CustomerProfileService
+
+profile_cache = BaseRedisService(
+    redis_url=settings.REDIS_URL,
+    prefix="user_profile",
+    ttl_seconds=3600
+)
 
 
 @extend_schema_view(
@@ -47,7 +55,7 @@ class CustomerProfileView(generics.RetrieveUpdateAPIView):
         """
         return get_object_or_404(CustomerProfile, user_id=self.request.user.id)
 
-    @cache_user_profile()
+    @cache_user_data(redis_client=profile_cache)
     def retrieve(self, request, *args, **kwargs):
         """
             Перевизначений стандартний метод GET, щоб викликати декоратор кешування.
@@ -71,6 +79,6 @@ class CustomerProfileView(generics.RetrieveUpdateAPIView):
 
         result_serializer = self.get_serializer(updated_profile)
 
-        invalidate_profile_cache(str(request.user.id))
+        invalidate_user_data_cache(redis_client=profile_cache, user_id=str(request.user.id))
 
         return Response(result_serializer.data, status=status.HTTP_200_OK)

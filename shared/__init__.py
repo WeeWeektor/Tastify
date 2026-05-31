@@ -15,9 +15,6 @@ __all__ = [
     "BaseRedisService",
     "BaseEmailTemplate",
     "EmailPayload",
-    "GlobalLanguageMiddleware",
-    "AdvancedRateLimitMiddleware",
-    "JWTAuthMiddleware",
     "validate_no_xss",
     "validate_image",
     "validate_phone",
@@ -25,4 +22,8 @@ __all__ = [
     "BaseKafkaConsumer",
     "get_minio_service",
     "MicroserviceJWTAuthentication",
+
+    "GlobalLanguageMiddleware",
+    "AdvancedRateLimitMiddleware",
+    "JWTAuthMiddleware",
 ]
