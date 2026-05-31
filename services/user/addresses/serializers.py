@@ -32,11 +32,11 @@ class AddressSerializer(serializers.ModelSerializer):
         ]
 
     def validate(self, attrs):
-        label = attrs.get('label', '')
+        label = attrs.get('label')
 
         if label:
             request = self.context.get('request')
-            user_id = request.user_context.get('user_id') if request and hasattr(request, 'user_context') else None
+            user_id = getattr(request.user, 'id', None) if request and hasattr(request, 'user') else None
 
             if user_id:
                 instance_id = self.instance.id if self.instance else None
