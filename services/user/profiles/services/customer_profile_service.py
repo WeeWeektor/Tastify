@@ -46,6 +46,9 @@ class CustomerProfileService:
     @classmethod
     @transaction.atomic
     def update_profile(cls, user_id: str, validated_data: dict, avatar_file: UploadedFile = None) -> CustomerProfile:
+        # TODO прибрати логіку збереження аватакрки (в майбтньому цим має займатися media сервіс)
+        # та додати можливість видалення аватарки (якщо користувач хоче її замінити на порожню)
+        # User Service має приймати лише готовий текстовий URL від Media Service!
         try:
             profile = CustomerProfile.objects.select_for_update().get(user_id=user_id)
         except ObjectDoesNotExist:
