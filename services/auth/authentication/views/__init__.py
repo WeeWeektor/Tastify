@@ -1,4 +1,5 @@
-from .auth import RegisterView, VerifyEmailView, LoginView, LogoutView, CustomTokenRefreshView
+from .auth import RegisterView, VerifyEmailView, LoginView, LogoutView, CustomTokenRefreshView, \
+    InternalUpdateLanguageView
 from .password import PasswordResetRequestView, PasswordResetConfirmView
 from .social import GoogleOAuthView, GoogleOAuthCallbackView
 from .two_factor import Setup2FAView, Enable2FAView, Verify2FALoginView
@@ -9,6 +10,7 @@ __all__ = [
     'LoginView',
     'LogoutView',
     'CustomTokenRefreshView',
+    'InternalUpdateLanguageView',
     'PasswordResetRequestView',
     'PasswordResetConfirmView',
     'GoogleOAuthView',

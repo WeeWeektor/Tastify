@@ -6,6 +6,7 @@ from authentication.views import (
     LoginView,
     LogoutView,
     CustomTokenRefreshView,
+    InternalUpdateLanguageView,
     PasswordResetRequestView,
     PasswordResetConfirmView,
     GoogleOAuthView,
@@ -44,4 +45,6 @@ urlpatterns = [
     path('password/', include(password_patterns)),
     path('social/', include(social_patterns)),
     path('2fa/', include(two_factor_patterns)),
+    path('internal/users/<uuid:user_id>/language/', InternalUpdateLanguageView.as_view(),
+         name='internal-update-language'),
 ]

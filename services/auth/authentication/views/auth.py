@@ -1,14 +1,15 @@
+from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema, OpenApiResponse, OpenApiParameter, OpenApiTypes
 from rest_framework import permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenRefreshView
-from shared import get_client_ip
 
 from authentication.serializers import RegisterSerializer, LoginSerializer, LogoutSerializer, \
-    CustomTokenRefreshSerializer
-from authentication.services import AuthenticationService
+    CustomTokenRefreshSerializer, InternalLanguageUpdateSerializer
+from authentication.services import AuthenticationService, LanguageService
+from shared import get_client_ip
 
 
 class RegisterView(APIView):
@@ -152,3 +153,25 @@ class CustomTokenRefreshView(TokenRefreshView):
     )
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
+
+
+class IsInternalService(permissions.BasePermission):
+    def has_permission(self, request, view):
+        secret = request.headers.get('X-Internal-Secret')
+        return secret == settings.INTERNAL_SECRET
+
+
+class InternalUpdateLanguageView(APIView):
+    permission_classes = [IsInternalService]
+
+    @extend_schema(exclude=True)
+    def patch(self, request, user_id):
+        serializer = InternalLanguageUpdateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        LanguageService.update_language(
+            user_id=user_id,
+            language=serializer.validated_data['language']
+        )
+
+        return Response(status=status.HTTP_200_OK)

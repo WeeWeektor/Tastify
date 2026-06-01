@@ -1,5 +1,6 @@
 from datetime import datetime, timezone
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
@@ -127,6 +128,7 @@ class CustomTokenRefreshSerializer(TokenRefreshSerializer):
         new_access_token = AccessToken(data['access'])
         new_access_token['email'] = user.email
         new_access_token['role'] = user.role
+        new_access_token['language'] = user.language
 
         data['access'] = str(new_access_token)
 
@@ -145,6 +147,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
         token['email'] = user.email
         token['role'] = user.role
+        token['language'] = user.language
 
         return token
 
@@ -170,4 +173,15 @@ class Verify2FALoginSerializer(serializers.Serializer):
         min_length=6,
         required=True,
         error_messages=CODE_FIELD_ERROR_MESSAGES
+    )
+
+
+class InternalLanguageUpdateSerializer(serializers.Serializer):
+    language = serializers.ChoiceField(
+        choices=settings.LANGUAGES,
+        required=True,
+        error_messages={
+            'required': 'Language field is required.',
+            'invalid_choice': 'Invalid language code.'
+        }
     )
