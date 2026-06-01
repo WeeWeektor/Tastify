@@ -29,6 +29,7 @@ class FavoriteRestaurantViewSet(
     mixins.DestroyModelMixin,
     viewsets.GenericViewSet
 ):
+    lookup_field = 'id'
     serializer_class = FavoriteRestaurantSerializer
     permission_classes = [permissions.IsAuthenticated]
 

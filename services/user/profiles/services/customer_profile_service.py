@@ -55,7 +55,17 @@ class CustomerProfileService:
             response = httpx.patch(
                 url,
                 json={"language": language},
-                headers={"X-Internal-Secret": settings.INTERNAL_SECRET},
+                headers={
+                    "X-Internal-Secret": settings.INTERNAL_SECRET,
+
+                    # TODO - Видалити підміну Host.
+                    # Причина: Django блокує запити до 'auth_service' (помилка RFC 1034/1035),
+                    # оскільки в доменних іменах заборонено використовувати нижнє підкреслення '_'.
+                    # Як виправити:
+                    # 1. У docker-compose.yml перейменувати всі сервіси з '_' на '-' (напр., 'auth-service', 'user-service').
+                    # 2. Оновити змінні URL у всіх .env файлах.
+                    "Host": "localhost"
+                },
                 timeout=5.0
             )
             response.raise_for_status()
