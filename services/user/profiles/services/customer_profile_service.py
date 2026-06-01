@@ -1,5 +1,7 @@
 import logging
 
+import httpx
+from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.uploadedfile import UploadedFile
 from django.db import transaction
@@ -44,6 +46,41 @@ class CustomerProfileService:
         return profile
 
     @classmethod
+    def sync_language_with_auth_service(cls, user_id: str, language: str):
+        """
+            Синхронний внутрішній запит до Auth Service для оновлення мови.
+        """
+        try:
+            url = f"{settings.AUTH_SERVICE_URL}/api/v1/auth/internal/users/{user_id}/language/"
+            response = httpx.patch(
+                url,
+                json={"language": language},
+                headers={
+                    "X-Internal-Secret": settings.INTERNAL_SECRET,
+
+                    # TODO - Видалити підміну Host.
+                    # Причина: Django блокує запити до 'auth_service' (помилка RFC 1034/1035),
+                    # оскільки в доменних іменах заборонено використовувати нижнє підкреслення '_'.
+                    # Як виправити:
+                    # 1. У docker-compose.yml перейменувати всі сервіси з '_' на '-' (напр., 'auth-service', 'user-service').
+                    # 2. Оновити змінні URL у всіх .env файлах.
+                    "Host": "localhost"
+                },
+                timeout=5.0
+            )
+            response.raise_for_status()
+            logger.info(f"Successfully synced language '{language}' for user {user_id} with Auth Service")
+
+        except httpx.RequestError as e:
+            logger.error(f"Network error while syncing language for {user_id}: {e}")
+            raise ValidationError({"language": _("Service is currently unavailable. Please try again later.")})
+        except httpx.HTTPStatusError as e:
+            logger.error(f"Auth Service returned {e.response.status_code} for user {user_id}")
+            raise ValidationError(
+                {"language": _("We were unable to update the language due to an internal service error.")}
+            )
+
+    @classmethod
     @transaction.atomic
     def update_profile(cls, user_id: str, validated_data: dict, avatar_file: UploadedFile = None) -> CustomerProfile:
         # TODO прибрати логіку збереження аватакрки (в майбтньому цим має займатися media сервіс)
@@ -53,6 +90,11 @@ class CustomerProfileService:
             profile = CustomerProfile.objects.select_for_update().get(user_id=user_id)
         except ObjectDoesNotExist:
             raise ValidationError({"detail": _("Customer profile does not exist.")})
+
+        new_language = validated_data.pop('language', None)
+
+        if new_language:
+            cls.sync_language_with_auth_service(user_id, new_language)
 
         if avatar_file:
             validate_image(avatar_file)

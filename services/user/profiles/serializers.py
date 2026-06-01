@@ -1,3 +1,4 @@
+from django.conf import settings
 from rest_framework import serializers
 
 from shared import validate_no_xss, validate_phone
@@ -15,6 +16,11 @@ class CustomerProfileSerializer(serializers.ModelSerializer):
         allow_null=True,
         validators=[validate_no_xss]
     )
+    language = serializers.ChoiceField(
+        choices=settings.LANGUAGES,
+        write_only=True,
+        required=False
+    )
 
     class Meta:
         model = CustomerProfile
@@ -28,7 +34,8 @@ class CustomerProfileSerializer(serializers.ModelSerializer):
             'bonus_points',
             'notification_telegram',
             'created_at',
-            'updated_at'
+            'updated_at',
+            'language'
         ]
 
         read_only_fields = [

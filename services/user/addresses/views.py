@@ -25,6 +25,7 @@ address_cache = BaseRedisService(
 )
 @extend_schema(tags=['Delivery Address'])
 class AddressViewSet(viewsets.ModelViewSet):
+    lookup_field = 'id'
     serializer_class = AddressSerializer
     permission_classes = [permissions.IsAuthenticated]
 
