@@ -31,3 +31,14 @@ class BaseRedisService:
         Видаляє ключ з Redis.
         """
         self.redis_client.delete(self._get_key(key))
+
+    def delete_by_pattern(self, pattern_key: str) -> None:
+        """
+        Видаляє всі ключі, які відповідають патерну.
+        Використовується для інвалідації всіх сторінок пагінації користувача.
+        """
+        match_pattern = f"{self.prefix}:{pattern_key}*"
+        keys_to_delete = list(self.redis_client.scan_iter(match=match_pattern))
+
+        if keys_to_delete:
+            self.redis_client.delete(*keys_to_delete)

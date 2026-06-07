@@ -1,0 +1,251 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-06-07 17:25+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != "
+"11 ? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % "
+"100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || "
+"(n % 100 >=11 && n % 100 <=14 )) ? 2: 3);\n"
+
+#: .\addresses\apps.py:8
+msgid "User Delivery Addresses"
+msgstr "Адреси доставки користувача"
+
+#: .\addresses\models.py:12 .\favorites\models.py:9
+#: .\order_history\models.py:11 .\profiles\models.py:9
+msgid "User ID"
+msgstr "ID користувача"
+
+#: .\addresses\models.py:15 .\profiles\models.py:13
+msgid "Unique identifier from the Auth Service."
+msgstr "Унікальний ідентифікатор із Auth Service."
+
+#: .\addresses\models.py:19
+msgid "Label"
+msgstr "Назва адреси"
+
+#: .\addresses\models.py:23
+msgid "For example: 'Home', 'Work', etc."
+msgstr "Наприклад: 'Дім', 'Робота' тощо."
+
+#: .\addresses\models.py:25
+msgid "Address Line"
+msgstr "Вулиця та будинок"
+
+#: .\addresses\models.py:26
+msgid "City"
+msgstr "Місто"
+
+#: .\addresses\models.py:29
+msgid "Latitude"
+msgstr "Широта"
+
+#: .\addresses\models.py:33
+msgid "Longitude"
+msgstr "Довгота"
+
+#: .\addresses\models.py:37
+msgid "Apartment/Unit"
+msgstr "Квартира/офіс"
+
+#: .\addresses\models.py:38
+msgid "Entrance"
+msgstr "Під'їзд"
+
+#: .\addresses\models.py:39
+msgid "Floor"
+msgstr "Поверх"
+
+#: .\addresses\models.py:40
+msgid "Comment"
+msgstr "Коментар для кур'єра"
+
+#: .\addresses\models.py:41
+msgid "Is Default"
+msgstr "За замовчуванням"
+
+#: .\addresses\models.py:50
+msgid "Delivery Address"
+msgstr "Адреса доставки"
+
+#: .\addresses\models.py:51
+msgid "Delivery Addresses"
+msgstr "Адреси доставки"
+
+#: .\addresses\models.py:73
+msgid "Address"
+msgstr "Адреса"
+
+#: .\addresses\serializers.py:50
+msgid "An address with this label already exists."
+msgstr "Адреса з такою назвою вже існує."
+
+#: .\core\settings\base.py:96
+msgid "English"
+msgstr "Англійська"
+
+#: .\core\settings\base.py:97
+msgid "Ukrainian"
+msgstr "Українська"
+
+#: .\favorites\apps.py:8
+msgid "User Favorite Restaurants"
+msgstr "Улюблені ресторани користувача"
+
+#: .\favorites\models.py:10 .\order_history\models.py:12
+msgid "Restaurant ID"
+msgstr "ID ресторану"
+
+#: .\favorites\models.py:11
+msgid "Restaurant Snapshot"
+msgstr "Дані ресторану"
+
+#: .\favorites\models.py:12
+msgid "Added at"
+msgstr "Додано о"
+
+#: .\favorites\models.py:18
+msgid "Favorite Restaurant"
+msgstr "Улюблений ресторан"
+
+#: .\favorites\models.py:19
+msgid "Favorite Restaurants"
+msgstr "Улюблені ресторани"
+
+#: .\favorites\serializers.py:46
+msgid "This restaurant is already in your favorites."
+msgstr "Цей ресторан уже є у ваших улюблених."
+
+#: .\order_history\apps.py:8
+msgid "Order History"
+msgstr "Історія замовлень"
+
+#: .\order_history\models.py:10
+msgid "Original Order ID"
+msgstr "Оригінальний ID замовлення"
+
+#: .\order_history\models.py:13
+msgid "Restaurant Name"
+msgstr "Назва ресторану"
+
+#: .\order_history\models.py:14
+msgid "Restaurant Logo URL"
+msgstr "URL логотипа ресторану"
+
+#: .\order_history\models.py:15
+msgid "Total Amount"
+msgstr "Загальна сума"
+
+#: .\order_history\models.py:16
+msgid "Items Summary"
+msgstr "Склад замовлення"
+
+#: .\order_history\models.py:17
+msgid "Status"
+msgstr "Статус"
+
+#: .\order_history\models.py:19
+msgid "Short Delivery Address"
+msgstr "Коротка адреса доставки"
+
+#: .\order_history\models.py:23
+msgid "Short address for the list (e.g. '22 Khreshchatyk Street')"
+msgstr "Коротка адреса для списку (напр. 'вул. Хрещатик, 22')"
+
+#: .\order_history\models.py:25
+msgid "Rating Given"
+msgstr "Виставлена оцінка"
+
+#: .\order_history\models.py:26 .\profiles\models.py:35
+msgid "Created At"
+msgstr "Створено о"
+
+#: .\order_history\models.py:27
+msgid "Delivered At"
+msgstr "Доставлено о"
+
+#: .\order_history\models.py:33
+msgid "Order History Item"
+msgstr "Елемент історії замовлень"
+
+#: .\order_history\models.py:34
+msgid "Order History Items"
+msgstr "Елементи історії замовлень"
+
+#: .\profiles\apps.py:8
+msgid "User Profiles"
+msgstr "Профілі користувачів"
+
+#: .\profiles\models.py:15
+msgid "Display Name"
+msgstr "Ім'я для відображення"
+
+#: .\profiles\models.py:16
+msgid "first name"
+msgstr "ім'я"
+
+#: .\profiles\models.py:17
+msgid "last name"
+msgstr "прізвище"
+
+#: .\profiles\models.py:19
+msgid "Phone Number"
+msgstr "Номер телефону"
+
+#: .\profiles\models.py:24
+msgid "Contact phone number for couriers. Must be unique."
+msgstr "Контактний номер для кур'єрів. Має бути унікальним."
+
+#: .\profiles\models.py:26
+msgid "Avatar URL"
+msgstr "URL аватара"
+
+#: .\profiles\models.py:27
+msgid "Bonus Points"
+msgstr "Бонусні бали"
+
+#: .\profiles\models.py:29
+msgid "Telegram Username"
+msgstr "Ім'я користувача в Telegram"
+
+#: .\profiles\models.py:36
+msgid "Updated At"
+msgstr "Оновлено о"
+
+#: .\profiles\models.py:42
+msgid "Customer Profile"
+msgstr "Профіль клієнта"
+
+#: .\profiles\models.py:43
+msgid "Customer Profiles"
+msgstr "Профілі клієнтів"
+
+#: .\profiles\services\customer_profile_service.py:76
+msgid "Service is currently unavailable. Please try again later."
+msgstr "Сервіс наразі недоступний. Будь ласка, спробуйте пізніше."
+
+#: .\profiles\services\customer_profile_service.py:80
+msgid "We were unable to update the language due to an internal service error."
+msgstr "Не вдалося оновити мову через внутрішню помилку сервісу."
+
+#: .\profiles\services\customer_profile_service.py:92
+msgid "Customer profile does not exist."
+msgstr "Профіль клієнта не існує."
+
+#: .\profiles\services\customer_profile_service.py:112
+msgid "Failed to upload avatar image. Please try again later."
+msgstr "Не вдалося завантажити зображення аватара. Будь ласка, спробуйте пізніше."

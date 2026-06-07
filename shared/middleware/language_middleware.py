@@ -7,9 +7,9 @@ class GlobalLanguageMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
-        lang = request.headers.get('Accept-Language', 'en')
+        raw_lang = request.headers.get('Accept-Language', settings.LANGUAGE_CODE)
 
-        lang = lang.split(',')[0].split('-')[0]
+        lang = raw_lang.split(',')[0].split('-')[0].strip() if raw_lang else settings.LANGUAGE_CODE
 
         supported_langs = [code for code, name in settings.LANGUAGES]
         if lang not in supported_langs:
@@ -21,7 +21,5 @@ class GlobalLanguageMiddleware:
         response = self.get_response(request)
 
         response['Content-Language'] = lang
-
-        response.set_cookie('django_language', lang)
 
         return response

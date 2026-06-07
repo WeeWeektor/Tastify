@@ -5,6 +5,7 @@ from .validators import validate_no_xss, validate_image, validate_phone
 from .kafka_client import KafkaProducerClient, BaseKafkaConsumer
 from .minio_client import get_minio_service
 from .auth_backend import MicroserviceJWTAuthentication
+from .pagination import BasePageNumberPagination
 
 from .middleware.language_middleware import GlobalLanguageMiddleware
 from .middleware.rate_limit_middleware import AdvancedRateLimitMiddleware
@@ -22,6 +23,7 @@ __all__ = [
     "BaseKafkaConsumer",
     "get_minio_service",
     "MicroserviceJWTAuthentication",
+    "BasePageNumberPagination",
 
     "GlobalLanguageMiddleware",
     "AdvancedRateLimitMiddleware",

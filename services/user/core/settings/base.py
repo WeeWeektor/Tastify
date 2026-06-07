@@ -120,6 +120,9 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     'UNAUTHENTICATED_USER': None,
+
+    'DEFAULT_PAGINATION_CLASS': 'shared.BasePageNumberPagination',
+    'PAGE_SIZE': 20,
 }
 
 SPECTACULAR_SETTINGS = {
@@ -127,4 +130,12 @@ SPECTACULAR_SETTINGS = {
     'DESCRIPTION': 'API for user profiles, addresses, favorites, and order history',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
+}
+
+GLOBAL_RATE_LIMIT = {'rate': 100, 'period': 60}
+RATE_LIMITS = {
+    '/api/v1/users/me/': {'rate': 20, 'period': 60},
+    '/api/v1/users/me/orders/': {'rate': 15, 'period': 60},
+    '/api/v1/users/addresses/': {'rate': 15, 'period': 60},
+    '/api/v1/users/favorites/': {'rate': 20, 'period': 60},
 }
