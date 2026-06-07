@@ -41,8 +41,9 @@ class AdvancedRateLimitMiddleware:
         message = 'Global rate limit exceeded. You are making too many requests.'
         return self._check_limit(key, self.global_limit, message)
 
-    def _only_url_rate_limit(self, request, ip: str, path: str) -> JsonResponse | None:
-        """Перевірка специфічного ліміту для конкретного URL."""
+    def _only_url_rate_limit(self, request, ip: str, path: str, limit_key: str,
+                             limit_data: dict) -> JsonResponse | None:
+        """Перевірка специфічного ліміту для конкретного URL або патерну."""
         rate_for_email_paths = [
             '/api/v1/auth/login/',
             '/api/v1/auth/verify-email/',
@@ -53,9 +54,8 @@ class AdvancedRateLimitMiddleware:
             email = self._get_email_from_request(request)
 
         identifier = f"{ip}:{email}" if email else ip
-        key = f"ratelimit:{path}:{identifier}"
+        key = f"ratelimit:{limit_key}:{identifier}"
 
-        limit_data = self.limits[path]
         message = 'Too many requests. Please wait.'
         return self._check_limit(key, limit_data, message)
 
@@ -67,8 +67,22 @@ class AdvancedRateLimitMiddleware:
             return global_response
 
         path = request.path
+
+        limit_data = None
+        limit_key = None
+
         if path in self.limits:
-            url_response = self._only_url_rate_limit(request, ip, path)
+            limit_data = self.limits[path]
+            limit_key = path
+        else:
+            for key, data in self.limits.items():
+                if path.startswith(key):
+                    limit_data = data
+                    limit_key = key
+                    break
+
+        if limit_data and limit_key:
+            url_response = self._only_url_rate_limit(request, ip, path, limit_key, limit_data)
             if url_response:
                 return url_response
 

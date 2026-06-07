@@ -131,3 +131,11 @@ SPECTACULAR_SETTINGS = {
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
 }
+
+GLOBAL_RATE_LIMIT = {'rate': 100, 'period': 60}
+RATE_LIMITS = {
+    '/api/v1/users/me/': {'rate': 20, 'period': 60},
+    '/api/v1/users/me/orders/': {'rate': 15, 'period': 60},
+    '/api/v1/users/addresses/': {'rate': 15, 'period': 60},
+    '/api/v1/users/favorites/': {'rate': 20, 'period': 60},
+}
