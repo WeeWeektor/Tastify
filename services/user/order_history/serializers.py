@@ -22,7 +22,8 @@ from .models import OrderHistoryItem
                 "status": "delivered",
                 "rating_given": 5,
                 "delivery_address_short": "вул. Хрещатик, 22",
-                "created_at": "2026-06-07T14:30:00Z"
+                "created_at": "2026-06-07T14:30:00Z",
+                "delivered_at": "2026-06-07T15:00:00Z"
             },
             response_only=True,
         )
@@ -42,6 +43,7 @@ class OrderHistoryItemSerializer(serializers.ModelSerializer):
             'status',
             'rating_given',
             'delivery_address_short',
-            'created_at'
+            'created_at',
+            'delivered_at'
         ]
         read_only_fields = fields

@@ -24,6 +24,7 @@ class OrderHistoryItem(models.Model):
     )
     rating_given = models.SmallIntegerField(_('Rating Given'), null=True, blank=True)
     created_at = models.DateTimeField(_('Created At'))
+    delivered_at = models.DateTimeField(_('Delivered At'), null=True, blank=True)
 
     objects = models.Manager()
 

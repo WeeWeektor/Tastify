@@ -38,8 +38,13 @@ class OrderHistoryService:
         order_id = event_data.get('order_id')
         new_status = event_data.get('status')
         user_id = event_data.get('user_id')
+        delivered_at = event_data.get('delivered_at')
 
-        updated = OrderHistoryItem.objects.filter(order_id=order_id).update(status=new_status)
+        update_fields = {'status': new_status}
+        if new_status == 'DELIVERED' and delivered_at:
+            update_fields['delivered_at'] = delivered_at
+
+        updated = OrderHistoryItem.objects.filter(order_id=order_id).update(**update_fields)
 
         if updated:
             invalidate_user_data_cache(order_history_cache, str(user_id))
