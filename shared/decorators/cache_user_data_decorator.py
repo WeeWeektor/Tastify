@@ -25,7 +25,12 @@ def cache_user_data(redis_client: BaseRedisService, encoder_class=DjangoJSONEnco
             if not user_id:
                 return view_func(view_instance, request, *args, **kwargs)
 
-            cached_data = redis_client.get_value(user_id)
+            lang = getattr(request, 'LANGUAGE_CODE', 'en')
+            query_string = request.query_params.urlencode()
+
+            cache_suffix = f"{user_id}:lang_{lang}:qs_{query_string}"
+
+            cached_data = redis_client.get_value(cache_suffix)
             if cached_data:
                 return Response(json.loads(cached_data))
 
@@ -33,7 +38,7 @@ def cache_user_data(redis_client: BaseRedisService, encoder_class=DjangoJSONEnco
 
             if response.status_code == 200:
                 redis_client.store(
-                    key=user_id,
+                    key=cache_suffix,
                     value=json.dumps(response.data, cls=encoder_class)
                 )
 
@@ -45,4 +50,7 @@ def cache_user_data(redis_client: BaseRedisService, encoder_class=DjangoJSONEnco
 
 
 def invalidate_user_data_cache(redis_client: BaseRedisService, user_id: str):
-    redis_client.delete(user_id)
+    """
+    Видаляє ВСІ сторінки та мовні версії кешу для конкретного юзера.
+    """
+    redis_client.delete_by_pattern(user_id)
