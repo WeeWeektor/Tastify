@@ -4,7 +4,7 @@ from functools import wraps
 from django.core.serializers.json import DjangoJSONEncoder
 from rest_framework.response import Response
 
-from shared import BaseRedisService
+from shared.redis_client import BaseRedisService
 
 
 def cache_user_data(redis_client: BaseRedisService, encoder_class=DjangoJSONEncoder):

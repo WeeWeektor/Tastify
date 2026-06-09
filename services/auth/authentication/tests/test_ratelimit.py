@@ -5,7 +5,7 @@ from django.core.cache import cache
 from django.http import HttpResponse
 from django.test import RequestFactory
 
-from shared import AdvancedRateLimitMiddleware
+from shared.middleware.rate_limit_middleware import AdvancedRateLimitMiddleware
 
 
 def dummy_get_response(request):

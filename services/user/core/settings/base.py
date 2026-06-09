@@ -34,8 +34,8 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'corsheaders.middleware.CorsMiddleware',
-    'shared.GlobalLanguageMiddleware',
-    'shared.AdvancedRateLimitMiddleware',
+    'shared.middleware.language_middleware.GlobalLanguageMiddleware',
+    'shared.middleware.rate_limit_middleware.AdvancedRateLimitMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -51,9 +51,7 @@ TEMPLATES = [
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.request'
             ],
         },
     },
@@ -121,7 +119,7 @@ REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     'UNAUTHENTICATED_USER': None,
 
-    'DEFAULT_PAGINATION_CLASS': 'shared.BasePageNumberPagination',
+    'DEFAULT_PAGINATION_CLASS': 'shared.pagination.BasePageNumberPagination',
     'PAGE_SIZE': 20,
 }
 

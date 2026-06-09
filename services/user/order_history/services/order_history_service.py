@@ -1,7 +1,7 @@
 import logging
 
 from order_history.models import OrderHistoryItem
-from shared.decorators import invalidate_user_data_cache
+from shared.decorators.cache_user_data_decorator import invalidate_user_data_cache
 from .cache_service import order_history_cache
 
 logger = logging.getLogger(__name__)

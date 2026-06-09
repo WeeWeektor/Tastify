@@ -2,7 +2,7 @@ from drf_spectacular.utils import extend_schema
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 
-from shared.decorators import cache_user_data
+from shared.decorators.cache_user_data_decorator import cache_user_data
 from .models import OrderHistoryItem
 from .serializers import OrderHistoryItemSerializer
 from .services import order_history_cache

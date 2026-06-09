@@ -1,7 +1,7 @@
 from django.conf import settings
 from rest_framework import serializers
 
-from shared import validate_no_xss, validate_phone
+from shared.validators import validate_no_xss, validate_phone
 from .models import CustomerProfile
 
 

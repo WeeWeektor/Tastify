@@ -5,6 +5,7 @@ include:
   - gateway/docker-compose.yml
   - services/auth/docker-compose.yml
   - services/user/docker-compose.yml
+  - services/restaurant/docker-compose.yml
 
 networks:
   tastify_network:

@@ -2,8 +2,8 @@ from django.conf import settings
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import viewsets, permissions, mixins
 
-from shared import BaseRedisService
-from shared.decorators import cache_user_data, invalidate_user_data_cache
+from shared.redis_client import BaseRedisService
+from shared.decorators.cache_user_data_decorator import cache_user_data, invalidate_user_data_cache
 from .models import FavoriteRestaurant
 from .serializers import FavoriteRestaurantSerializer
 from .services import FavoriteRestaurantService

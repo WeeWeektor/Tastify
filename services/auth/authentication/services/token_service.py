@@ -1,5 +1,5 @@
 from django.conf import settings
-from shared import BaseRedisService
+from shared.redis_client import BaseRedisService
 
 pre_auth_service = BaseRedisService(
     redis_url=settings.REDIS_URL,
