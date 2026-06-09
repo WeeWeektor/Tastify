@@ -4,7 +4,7 @@ from django.conf import settings
 from django.core.mail import send_mail
 from django.utils.translation import gettext_lazy as _
 
-from shared import BaseEmailTemplate, EmailPayload
+from shared.email_utils import BaseEmailTemplate, EmailPayload
 
 logger = logging.getLogger(__name__)
 

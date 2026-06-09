@@ -25,10 +25,10 @@ INSTALLED_APPS = [
     'corsheaders',
     'drf_spectacular',
 
-    'profiles',
-    'addresses',
-    'favorites',
-    'order_history',
+    'restaurants',
+    'menus',
+    'promotions',
+    'working_hours',
 ]
 
 MIDDLEWARE = [
@@ -78,16 +78,17 @@ CACHES = {
 }
 CACHE_TTL = 60 * 15
 
-MINIO_ENDPOINT = os.environ.get('MINIO_ENDPOINT')
-MINIO_PUBLIC_URL = os.environ.get('MINIO_PUBLIC_URL')
-MINIO_ACCESS_KEY = os.environ.get('MINIO_ROOT_USER')
-MINIO_SECRET_KEY = os.environ.get('MINIO_ROOT_PASSWORD')
-MINIO_REGION = os.environ.get('MINIO_REGION')
+MINIO_ENDPOINT = env('MINIO_ENDPOINT')
+MINIO_PUBLIC_URL = env('MINIO_PUBLIC_URL')
+MINIO_ACCESS_KEY = env('MINIO_ROOT_USER')
+MINIO_SECRET_KEY = env('MINIO_ROOT_PASSWORD')
+MINIO_REGION = env('MINIO_REGION')
 
 JWT_SECRET_KEY = env('JWT_SECRET_KEY')
 INTERNAL_SECRET = env('INTERNAL_SECRET')
 AUTH_SERVICE_URL = env('AUTH_SERVICE_URL')
-ANALYTICS_SERVICE_URL = env('ANALYTICS_SERVICE_URL')
+MEDIA_SERVICE_URL = env('MEDIA_SERVICE_URL')
+BILLING_SERVICE_URL = env('BILLING_SERVICE_URL')
 
 LANGUAGE_CODE = 'en'
 LANGUAGES = [
@@ -124,16 +125,12 @@ REST_FRAMEWORK = {
 }
 
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'Tastify User API',
-    'DESCRIPTION': 'API for user profiles, addresses, favorites, and order history',
+    'TITLE': 'Tastify restaurant API',
+    'DESCRIPTION': 'API for restaurants, menus, promotions, and working hours management.',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
 }
 
-GLOBAL_RATE_LIMIT = {'rate': 100, 'period': 60}
-RATE_LIMITS = {
-    '/api/v1/users/me/': {'rate': 20, 'period': 60},
-    '/api/v1/users/me/orders/': {'rate': 15, 'period': 60},
-    '/api/v1/users/addresses/': {'rate': 15, 'period': 60},
-    '/api/v1/users/favorites/': {'rate': 20, 'period': 60},
-}
+# TODO
+GLOBAL_RATE_LIMIT = {}
+RATE_LIMITS = {}

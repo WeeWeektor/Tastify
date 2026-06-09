@@ -4,7 +4,7 @@ from celery import shared_task
 from django.utils import timezone
 from django.utils import translation
 
-from shared import KafkaProducerClient
+from shared.kafka_client import KafkaProducerClient
 from .models import RefreshTokenBlacklist
 from .services.email_service import EmailSenderService, VerificationEmail
 

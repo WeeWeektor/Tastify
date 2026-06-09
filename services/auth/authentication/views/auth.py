@@ -9,7 +9,7 @@ from rest_framework_simplejwt.views import TokenRefreshView
 from authentication.serializers import RegisterSerializer, LoginSerializer, LogoutSerializer, \
     CustomTokenRefreshSerializer, InternalLanguageUpdateSerializer
 from authentication.services import AuthenticationService, LanguageService
-from shared import get_client_ip
+from shared.ip_utils import get_client_ip
 
 
 class RegisterView(APIView):

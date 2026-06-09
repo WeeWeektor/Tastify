@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 
 from profiles.events import handle_user_events
-from shared import BaseKafkaConsumer
+from shared.kafka_client import BaseKafkaConsumer
 
 
 class Command(BaseCommand):

@@ -5,8 +5,8 @@ from rest_framework import generics, permissions, status
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 from rest_framework.response import Response
 
-from shared import BaseRedisService
-from shared.decorators import cache_user_data, invalidate_user_data_cache
+from shared.redis_client import BaseRedisService
+from shared.decorators.cache_user_data_decorator import cache_user_data, invalidate_user_data_cache
 from .models import CustomerProfile
 from .serializers import CustomerProfileSerializer
 from .services import CustomerProfileService

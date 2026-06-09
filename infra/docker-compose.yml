@@ -42,26 +42,26 @@ services:
     networks:
       - tastify_network
 
-#  postgres_restaurant:
-#    image: postgres:16
-#    container_name: tastify_postgres_restaurant
-#    restart: unless-stopped
-#    environment:
-#      POSTGRES_DB: ${RESTAURANT_DB_NAME}
-#      POSTGRES_USER: ${RESTAURANT_DB_USER}
-#      POSTGRES_PASSWORD: ${RESTAURANT_DB_PASSWORD}
-#    ports:
-#      - "5534:5432"
-#    volumes:
-#      - postgres_restaurant_data:/var/lib/postgresql/data
-#    healthcheck:
-#      test: [ "CMD-SHELL", "pg_isready -U ${RESTAURANT_DB_USER} -d ${RESTAURANT_DB_NAME}" ]
-#      interval: 10s
-#      timeout: 5s
-#      retries: 5
-#    networks:
-#      - tastify_network
-#
+  postgres_restaurant:
+    image: postgres:16
+    container_name: tastify_postgres_restaurant
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${RESTAURANT_DB_NAME}
+      POSTGRES_USER: ${RESTAURANT_DB_USER}
+      POSTGRES_PASSWORD: ${RESTAURANT_DB_PASSWORD}
+    ports:
+      - "5534:5432"
+    volumes:
+      - postgres_restaurant_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${RESTAURANT_DB_USER} -d ${RESTAURANT_DB_NAME}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - tastify_network
+
 #  postgres_order:
 #    image: postgres:16
 #    container_name: tastify_postgres_order
@@ -388,7 +388,7 @@ services:
 volumes:
   postgres_auth_data:
   postgres_user_data:
-#  postgres_restaurant_data:
+  postgres_restaurant_data:
 #  postgres_order_data:
 #  postgres_delivery_data:
 #  postgres_payment_data:

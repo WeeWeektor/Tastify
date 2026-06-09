@@ -9,7 +9,8 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework.exceptions import ValidationError
 
 from profiles.models import CustomerProfile
-from shared import get_minio_service, validate_image
+from shared.minio_client import get_minio_service
+from shared.validators import validate_image
 
 logger = logging.getLogger(__name__)
 
