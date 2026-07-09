@@ -2,7 +2,7 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
 from shared.validators import validate_no_xss, validate_phone
-from .models import Restaurant, RestaurantEmployee
+from .models import Restaurant, RestaurantEmployee, EmployeeRole
 
 
 class RestaurantSerializer(serializers.ModelSerializer):
@@ -53,5 +53,46 @@ class RestaurantEmployeeSerializer(serializers.ModelSerializer):
 
         read_only_fields = [
             'id',
-            'created_at'
+            'created_at',
+            'restaurant'
         ]
+
+    def validate(self, attrs):
+        request = self.context.get('request')
+        view = self.context.get('view')
+        restaurant_slug = view.kwargs.get('slug') if view else None
+
+        target_role = attrs.get('role', getattr(self.instance, 'role', None))
+
+        if request and restaurant_slug and target_role:
+            current_user_id = getattr(request.user, 'id', None)
+            if not current_user_id and hasattr(request, 'user_context'):
+                current_user_id = request.user_context.get('user_id')
+
+            current_employee = RestaurantEmployee.objects.filter(
+                restaurant__slug=restaurant_slug,
+                user_id=current_user_id
+            ).first()
+
+            if current_employee:
+                if current_employee.role == EmployeeRole.MANAGER:
+                    if target_role in [EmployeeRole.OWNER, EmployeeRole.MANAGER]:
+                        raise serializers.ValidationError({
+                            "role": _("Only the Owner (OWNER) can assign the roles of MANAGER or OWNER.")
+                        })
+
+        if target_role == EmployeeRole.OWNER and restaurant_slug:
+            existing_owner_query = RestaurantEmployee.objects.filter(
+                restaurant__slug=restaurant_slug,
+                role=EmployeeRole.OWNER
+            )
+
+            if self.instance:
+                existing_owner_query = existing_owner_query.exclude(pk=self.instance.pk)
+
+            if existing_owner_query.exists():
+                raise serializers.ValidationError({
+                    "role": _("This restaurant already has an owner. You cannot assign more than one OWNER.")
+                })
+
+        return attrs

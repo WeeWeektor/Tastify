@@ -26,10 +26,19 @@ class IsPlatformAdmin(permissions.BasePermission):
 class BaseRestaurantPermission(permissions.BasePermission):
     """
     Базовий клас для перевірки прав працівників ресторану.
-    Містить спільну логіку для визначення ID ресторану з різних об'єктів.
+    Вміє перевіряти права як для конкретного об'єкта, так і для URL-шляху (slug).
     """
 
-    def get_restaurant_id(self, obj):
+    def _get_user_id(self, request):
+        """Витягує user_id з урахуванням кастомного JWT контексту."""
+        if hasattr(request, 'user') and getattr(request.user, 'id', None):
+            return str(request.user.id)
+        if hasattr(request, 'user_context') and isinstance(request.user_context, dict):
+            return str(request.user_context.get('user_id'))
+        return None
+
+    def _get_restaurant_id_from_obj(self, obj):
+        """Достає ID ресторану з будь-якого об'єкта моделі."""
         if isinstance(obj, Restaurant):
             return obj.id
         if hasattr(obj, 'restaurant_id'):
@@ -38,61 +47,71 @@ class BaseRestaurantPermission(permissions.BasePermission):
             return obj.restaurant.id
         return None
 
-    def check_role(self, request, obj, allowed_roles):
-        if not request.user or not request.user.is_authenticated:
+    def _check_role(self, request, allowed_roles, restaurant_id=None, restaurant_slug=None):
+        """Головна логіка перевірки в базі даних."""
+        user_id = self._get_user_id(request)
+        if not user_id:
             return False
 
-        restaurant_id = self.get_restaurant_id(obj)
-        if not restaurant_id:
-            return False
-
-        return RestaurantEmployee.objects.filter(
-            restaurant_id=restaurant_id,
-            user_id=request.user.id,
+        query = RestaurantEmployee.objects.filter(
+            user_id=user_id,
             role__in=allowed_roles,
             is_active=True
-        ).exists()
+        )
+
+        if restaurant_id:
+            return query.filter(restaurant_id=restaurant_id).exists()
+        elif restaurant_slug:
+            return query.filter(restaurant__slug=restaurant_slug).exists()
+
+        return False
 
 
 class IsRestaurantOwner(BaseRestaurantPermission):
-    """
-    Повний доступ. Тільки для ролі OWNER.
-    Використання: Додавання/видалення менеджерів, глобальні налаштування.
-    """
+    """Тільки для ролі OWNER (наприклад, додавання/видалення менеджерів)."""
+
+    def has_permission(self, request, view):
+        slug = view.kwargs.get('slug')
+        if slug:
+            return self._check_role(request, [EmployeeRole.OWNER], restaurant_slug=slug)
+        return True
 
     def has_object_permission(self, request, view, obj):
-        return self.check_role(request, obj, allowed_roles=[EmployeeRole.OWNER])
+        rest_id = self._get_restaurant_id_from_obj(obj)
+        return self._check_role(request, [EmployeeRole.OWNER], restaurant_id=rest_id)
 
 
 class IsRestaurantManagerOrOwner(BaseRestaurantPermission):
-    """
-    Високий доступ. Для OWNER та MANAGER.
-    Використання: Оновлення інформації про ресторан (назва, телефон, графік, is_accepting_orders).
-    """
+    """Для OWNER та MANAGER (наприклад, оновлення налаштувань, найм працівників)."""
+
+    def has_permission(self, request, view):
+        slug = view.kwargs.get('slug')
+        if slug:
+            return self._check_role(request, [EmployeeRole.OWNER, EmployeeRole.MANAGER], restaurant_slug=slug)
+        return True
 
     def has_object_permission(self, request, view, obj):
-        if request.method in permissions.SAFE_METHODS:
-            return True
-
-        return self.check_role(
-            request,
-            obj,
-            allowed_roles=[EmployeeRole.OWNER, EmployeeRole.MANAGER]
-        )
+        rest_id = self._get_restaurant_id_from_obj(obj)
+        return self._check_role(request, [EmployeeRole.OWNER, EmployeeRole.MANAGER], restaurant_id=rest_id)
 
 
 class IsMenuEditor(BaseRestaurantPermission):
-    """
-    Базовий доступ до управління меню. Для всіх активних працівників.
-    Використання: Створення, оновлення, видалення категорій та страв меню.
-    """
+    """Для всіх активних працівників (OWNER, MANAGER, EDITOR)."""
+
+    def has_permission(self, request, view):
+        slug = view.kwargs.get('slug')
+        if slug:
+            return self._check_role(
+                request,
+                [EmployeeRole.OWNER, EmployeeRole.MANAGER, EmployeeRole.EDITOR],
+                restaurant_slug=slug
+            )
+        return True
 
     def has_object_permission(self, request, view, obj):
-        if request.method in permissions.SAFE_METHODS:
-            return True
-
-        return self.check_role(
+        rest_id = self._get_restaurant_id_from_obj(obj)
+        return self._check_role(
             request,
-            obj,
-            allowed_roles=[EmployeeRole.OWNER, EmployeeRole.MANAGER, EmployeeRole.EDITOR]
+            [EmployeeRole.OWNER, EmployeeRole.MANAGER, EmployeeRole.EDITOR],
+            restaurant_id=rest_id
         )

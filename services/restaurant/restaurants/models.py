@@ -2,6 +2,7 @@ import uuid
 
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
+from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 from slugify import slugify
 
@@ -140,6 +141,11 @@ class RestaurantEmployee(models.Model):
             models.UniqueConstraint(
                 fields=['restaurant', 'user_id'],
                 name='unique_restaurant_employee'
+            ),
+            models.UniqueConstraint(
+                fields=['restaurant'],
+                condition=Q(role='owner'),
+                name='unique_owner_per_restaurant'
             )
         ]
 
