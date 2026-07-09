@@ -24,6 +24,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'drf_spectacular',
+    'django_filters',
 
     'restaurants',
     'menus',
@@ -78,11 +79,11 @@ CACHES = {
 }
 CACHE_TTL = 60 * 15
 
-MINIO_ENDPOINT = env('MINIO_ENDPOINT')
-MINIO_PUBLIC_URL = env('MINIO_PUBLIC_URL')
-MINIO_ACCESS_KEY = env('MINIO_ROOT_USER')
-MINIO_SECRET_KEY = env('MINIO_ROOT_PASSWORD')
-MINIO_REGION = env('MINIO_REGION')
+MINIO_ENDPOINT = os.environ.get('MINIO_ENDPOINT')
+MINIO_PUBLIC_URL = os.environ.get('MINIO_PUBLIC_URL')
+MINIO_ACCESS_KEY = os.environ.get('MINIO_ROOT_USER')
+MINIO_SECRET_KEY = os.environ.get('MINIO_ROOT_PASSWORD')
+MINIO_REGION = os.environ.get('MINIO_REGION')
 
 JWT_SECRET_KEY = env('JWT_SECRET_KEY')
 INTERNAL_SECRET = env('INTERNAL_SECRET')
