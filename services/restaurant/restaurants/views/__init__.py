@@ -1,4 +1,4 @@
-# from .management_views import
+from .management_views import RestaurantCreateView, RestaurantUpdateView, RestaurantToggleOrdersView
 from .public_views import RestaurantListView, RestaurantDetailView
 # from .admin_views import
 # from .employee_views import
@@ -7,4 +7,7 @@ from .public_views import RestaurantListView, RestaurantDetailView
 __all__ = [
     'RestaurantListView',
     'RestaurantDetailView',
+    'RestaurantCreateView',
+    'RestaurantUpdateView',
+    'RestaurantToggleOrdersView',
 ]
