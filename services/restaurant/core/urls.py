@@ -20,7 +20,7 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, Sp
 urlpatterns = [
     path('api/v1/restaurants/', include([
         path('', include('restaurants.urls')),
-        # path('menus/', include('menus.urls')),
+        path('menus/', include('menus.urls')),
         # path('working-hours/', include('working_hours.urls')),
         # path('promotions/', include('promotions.urls')),
     ])),
