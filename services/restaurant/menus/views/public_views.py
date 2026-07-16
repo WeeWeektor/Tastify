@@ -21,7 +21,7 @@ class PublicMenuListView(generics.ListAPIView):
     permission_classes = [AllowAny]
 
     def get_queryset(self):
-        restaurant_slug = self.kwargs.get('slug')
+        restaurant_slug = self.kwargs.get('restaurant_slug')
         return get_public_categories_queryset(restaurant_slug)
 
     @cache_public_data(redis_client=public_menu_list_cache)
@@ -43,7 +43,7 @@ class PublicMenuItemDetailView(generics.RetrieveAPIView):
     lookup_field = 'id'
 
     def get_queryset(self):
-        restaurant_slug = self.kwargs.get('slug')
+        restaurant_slug = self.kwargs.get('restaurant_slug')
         return get_public_menu_items_queryset(restaurant_slug)
 
     @cache_public_data(redis_client=public_menu_detail_cache)

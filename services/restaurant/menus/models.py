@@ -31,6 +31,8 @@ class Product(models.Model):
 
     is_active = models.BooleanField(DISPLAY_IS_ACTIVE_VERBOSE_NAME, default=True)
 
+    objects = models.Manager()
+
     class Meta:
         db_table = "products"
         verbose_name = _("Product (Base Dish)")

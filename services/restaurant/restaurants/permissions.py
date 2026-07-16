@@ -99,7 +99,7 @@ class IsMenuEditor(BaseRestaurantPermission):
     """Для всіх активних працівників (OWNER, MANAGER, EDITOR)."""
 
     def has_permission(self, request, view):
-        slug = view.kwargs.get('slug')
+        slug = view.kwargs.get('restaurant_slug')
         if slug:
             return self._check_role(
                 request,
