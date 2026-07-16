@@ -67,6 +67,8 @@ class MenuCategory(models.Model):
     order = models.SmallIntegerField(DISPLAY_ORDER_VERBOSE_NAME, default=0)
     is_active = models.BooleanField(DISPLAY_IS_ACTIVE_VERBOSE_NAME, default=True)
 
+    objects = models.Manager()
+
     class Meta:
         db_table = "menu_categories"
         verbose_name = _("Menu Category")
@@ -111,6 +113,8 @@ class MenuItem(models.Model):
 
     is_available = models.BooleanField(_("Is Available"), default=True)
     is_active = models.BooleanField(DISPLAY_IS_ACTIVE_VERBOSE_NAME, default=True)
+
+    objects = models.Manager()
 
     class Meta:
         db_table = "menu_items"
@@ -158,6 +162,8 @@ class ModifierGroup(models.Model):
     max_selections = models.SmallIntegerField(_("Maximum Selections"), default=1)
 
     order = models.SmallIntegerField(DISPLAY_ORDER_VERBOSE_NAME, default=0)
+
+    objects = models.Manager()
 
     class Meta:
         db_table = "modifier_groups"
@@ -209,6 +215,8 @@ class ModifierOption(models.Model):
 
     is_available = models.BooleanField(_("Is Available"), default=True)
     order = models.SmallIntegerField(DISPLAY_ORDER_VERBOSE_NAME, default=0)
+
+    objects = models.Manager()
 
     class Meta:
         db_table = "modifier_options"
